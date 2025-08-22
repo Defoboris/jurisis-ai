@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -47,8 +48,58 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function lawyers(): HasOne
+    public function lawyer(): HasOne
     {
         return $this->hasOne(Lawyer::class);
+    }
+
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'member_id');
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function chatbotSessions(): HasMany
+    {
+        return $this->hasMany(ChatbotSession::class);
+    }
+
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class, 'member_id');
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function moderationActions(): HasMany
+    {
+        return $this->hasMany(ModerationAction::class, 'admin_id');
+    }
+
+    public function recommendations(): HasMany
+    {
+        return $this->hasMany(LawyerRecommendation::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isLawyer(): bool
+    {
+        return $this->role === 'lawyer';
     }
 }
