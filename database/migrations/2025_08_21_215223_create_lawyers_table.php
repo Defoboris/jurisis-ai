@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('lawyers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('speciality')->nullable();
+            $table->string('specialty')->nullable();
             $table->string('bar_id')->nullable();
-            $table->string('frim_name')->nullable();
+            $table->string('firm_name')->nullable();
             $table->string('office_address')->nullable();
 
             // page to fields
             $table->string('slug')->unique();
-            $table->string('hadling')->nullable();
+            $table->string('headline')->nullable();
             $table->text('bio')->nullable();
             $table->string('vidio_url')->nullable();
             $table->boolean('is_published')->default(false);

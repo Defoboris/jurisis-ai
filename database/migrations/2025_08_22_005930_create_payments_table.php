@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedInteger('amount_cents');
             $table->string('currency', 3)->default('EUR');
             $table->enum('status', ['pending', 'paid', 'failed', 'refunded'])->default('pending');
+            $table->string('provider')->nullable();
             $table->string('provider_ref')->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->json('meta')->nullable();

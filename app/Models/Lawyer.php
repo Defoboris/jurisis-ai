@@ -14,12 +14,12 @@ class Lawyer extends Model
 
     protected $fillable = [
         'user_id',
-        'speciality',
+        'specialty',
         'bar_id',
-        'frim_name',
+        'specialty',
         'office_address',
         'slug',
-        'hadling',
+        'headline',
         'bio',
         'vidio_url',
         'is_published',

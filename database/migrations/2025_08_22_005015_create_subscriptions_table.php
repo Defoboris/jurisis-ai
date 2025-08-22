@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('end_at')->nullable();
             $table->timestamp('cencels_at')->nullable();
-            $table->string('provider_id')->nullable();
+            $table->string('provider')->nullable();
             $table->string('provider_ref')->nullable();
 
             $table->timestamps();

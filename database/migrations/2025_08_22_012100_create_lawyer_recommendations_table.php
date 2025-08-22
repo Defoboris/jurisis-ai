@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('lawyer_id')->constrained()->cascadeOnDelete();
             $table->decimal('score', 5, 2)->default(0);
-            $table->json('reson')->nullable();
+            $table->json('reason')->nullable();
             $table->timestamps();
 
             $table->unique(['user_id', 'lawyer_id']);
