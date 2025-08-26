@@ -1,9 +1,9 @@
 <template>
   <WebLayout>
     <section
-      class="relative flex justify-center py-20 overflow-hidden lg:py-32 bg-gradient-to-br from-background via-muted/30 to-background dark:from-background/20 dark:via-muted/50 dark:to-background/20"
+      class="relative py-20 overflow-hidden lg:py-32 bg-gradient-to-br from-background via-muted/30 to-background dark:from-background/20 dark:via-muted/50 dark:to-background/20"
     >
-      <div class="container relative">
+      <div class="container relative px-4 mx-auto">
         <div class="max-w-4xl mx-auto mb-16 text-center">
           <h1
             class="mb-6 text-4xl font-bold leading-tight font-heading lg:text-6xl text-foreground dark:text-foreground/90"
@@ -86,6 +86,9 @@
         </div>
       </div>
     </section>
+    <ServicesSection />
+    <About />
+    <ContactSection />
   </WebLayout>
 </template>
 
@@ -94,6 +97,9 @@ import { ref } from "vue";
 import { ArrowRight, Bot, Send } from "lucide-vue-next";
 
 import WebLayout from "@/Layouts/WebLayout.vue";
+import ServicesSection from "@/Components/WebComponents/ServicesSection.vue";
+import About from "@/Components/WebComponents/About.vue";
+import ContactSection from "@/Components/WebComponents/ContactSection.vue";
 
 const message = ref("");
 const showChat = ref(false);

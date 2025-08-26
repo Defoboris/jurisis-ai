@@ -22,50 +22,38 @@
         >
           Accueil
         </Link>
-        <a
-          href="/avocats"
+        <Link
+          :href="route('lawyers')"
           class="font-medium transition-colors text-foreground hover:text-primary dark:text-foreground/90 dark:hover:text-primary/80"
         >
           Avocats Experts
-        </a>
-        <a
-          href="/avocats/marie-dubois"
-          class="font-medium transition-colors text-foreground hover:text-primary dark:text-foreground/90 dark:hover:text-primary/80"
-        >
-          Profil Avocat
-        </a>
-        <a
-          href="/avocats/marie-dubois/articles/nouveau-rgpd-2024"
-          class="font-medium transition-colors text-foreground hover:text-primary dark:text-foreground/90 dark:hover:text-primary/80"
-        >
-          Article
-        </a>
-        <a
+        </Link>
+        <!-- <a
           href="/admin/dashboard"
           class="flex items-center gap-1 font-medium transition-colors text-foreground hover:text-primary dark:text-foreground/90 dark:hover:text-primary/80"
         >
           <Settings class="w-4 h-4" />
           Admin
-        </a>
+        </a> -->
       </nav>
 
       <div class="flex items-center gap-4">
-        <a href="/admin/dashboard">
+        <Link :href="route('dashboard')">
           <button
             class="inline-flex items-center justify-center hidden h-10 px-4 py-2 text-sm font-medium transition-colors bg-transparent border rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border-input hover:bg-accent hover:text-accent-foreground dark:border-muted-foreground dark:hover:bg-accent/80 dark:hover:text-accent-foreground/90 sm:inline-flex"
           >
             <User class="w-4 h-4 mr-2" />
             Dashboard
           </button>
-        </a>
+        </Link>
 
-        <a href="/avocats">
+        <Link :href="route('lawyers')">
           <button
             class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary/80 dark:text-primary-foreground/90 dark:hover:bg-primary/70"
           >
             Voir les Experts
           </button>
-        </a>
+        </Link>
 
         <button
           class="inline-flex items-center justify-center w-10 h-10 text-sm font-medium transition-colors rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/80 dark:hover:text-accent-foreground/90 md:hidden"
@@ -78,6 +66,6 @@
 </template>
 
 <script setup>
-import { Link } from "@inertiajs/vue3"
+import { Link, router } from "@inertiajs/vue3"
 import { Bot, Menu, User, Settings } from 'lucide-vue-next';
 </script>
