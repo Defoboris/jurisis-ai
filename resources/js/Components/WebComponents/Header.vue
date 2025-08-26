@@ -1,8 +1,6 @@
 <template>
   <header
-    class="flex justify-center sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur
-           supports-[backdrop-filter]:bg-background/60
-           dark:bg-background/20 dark:supports-[backdrop-filter]:bg-background/30"
+    class="flex justify-center sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:bg-background/20 dark:supports-[backdrop-filter]:bg-background/30"
   >
     <div class="container flex items-center justify-between h-16">
       <div class="flex items-center gap-2">
@@ -23,18 +21,18 @@
           Accueil
         </Link>
         <Link
+          :href="route('chat')"
+          class="flex items-center gap-1 font-medium transition-colors text-foreground hover:text-primary"
+        >
+          <MessageSquare class="w-4 h-4" />
+          Parler à Jurisis
+        </Link>
+        <Link
           :href="route('lawyers')"
           class="font-medium transition-colors text-foreground hover:text-primary dark:text-foreground/90 dark:hover:text-primary/80"
         >
           Avocats Experts
         </Link>
-        <!-- <a
-          href="/admin/dashboard"
-          class="flex items-center gap-1 font-medium transition-colors text-foreground hover:text-primary dark:text-foreground/90 dark:hover:text-primary/80"
-        >
-          <Settings class="w-4 h-4" />
-          Admin
-        </a> -->
       </nav>
 
       <div class="flex items-center gap-4">
@@ -66,6 +64,6 @@
 </template>
 
 <script setup>
-import { Link, router } from "@inertiajs/vue3"
-import { Bot, Menu, User, Settings } from 'lucide-vue-next';
+import { Link, router } from "@inertiajs/vue3";
+import { Bot, Menu, User, Settings, MessageSquare } from "lucide-vue-next";
 </script>

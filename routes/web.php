@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Website\AboutController;
 use App\Http\Controllers\Website\ArticleController;
+use App\Http\Controllers\Website\ChatController;
 use App\Http\Controllers\Website\HomeController;
 use App\Http\Controllers\Website\LawyerController;
 use Illuminate\Foundation\Application;
@@ -34,6 +35,9 @@ Route::get('/lawyers', [LawyerController::class, 'index'])->name('lawyers');
 Route::get('/lawyers/details', [LawyerController::class, 'show'])->name('lawyer.show');
 
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles');
+
+Route::get('/chat', [ChatController::class, 'index'])->name('chat');
+Route::get('/chat/stream', [ChatController::class, 'stream'])->name('chat.stream'); 
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

@@ -21,19 +21,21 @@
           </p>
 
           <div class="flex flex-col justify-center gap-4 mb-12 sm:flex-row">
-            <button
+            <Link
+              :href="route('chat')"
               @click="showChat = true"
               class="inline-flex items-center justify-center h-12 px-8 text-lg font-medium transition-colors rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary/80 dark:text-primary-foreground/90 dark:hover:bg-primary/70"
             >
               Parler à Jurisis
               <ArrowRight class="w-5 h-5 ml-2" />
-            </button>
+            </Link>
 
-            <button
+            <Link
+              :href="route('lawyers')"
               class="inline-flex items-center justify-center h-12 px-8 text-lg font-medium transition-colors bg-transparent border rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border-input hover:bg-accent hover:text-accent-foreground dark:border-muted-foreground dark:hover:bg-accent/80 dark:hover:text-accent-foreground/90"
             >
               Parler à un expert
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -56,11 +58,12 @@
                   externes qu'il pourrait utiliser (LLMs, bases de données
                   vectorielles, etc.).
                 </p>
-                <button
+                <Link
+                  :href="route('login')"
                   class="inline-flex items-center justify-center h-8 px-3 text-xs font-medium transition-colors bg-transparent border rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border-input hover:bg-accent hover:text-accent-foreground dark:border-muted-foreground dark:hover:bg-accent/80 dark:hover:text-accent-foreground/90"
                 >
                   Je comprends
-                </button>
+                </Link>
               </div>
 
               <div class="flex gap-2">
@@ -69,11 +72,12 @@
                   placeholder="Écrivez votre message..."
                   class="flex flex-1 w-full h-10 px-3 py-2 text-sm border rounded-md border-input bg-background ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-background/20 dark:border-muted-foreground dark:text-foreground/90 dark:placeholder:text-muted-foreground/70"
                 />
-                <button
+                <Link
+                  :href="route('chat')"
                   class="inline-flex items-center justify-center w-10 h-10 text-sm font-medium transition-colors rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary/80 dark:text-primary-foreground/90 dark:hover:bg-primary/70"
                 >
                   <Send class="w-4 h-4" />
-                </button>
+              </Link>
               </div>
 
               <p class="mt-3 text-xs text-center text-muted-foreground dark:text-muted-foreground/70">
@@ -95,6 +99,7 @@
 <script setup>
 import { ref } from "vue";
 import { ArrowRight, Bot, Send } from "lucide-vue-next";
+import { Link } from "@inertiajs/vue3";
 
 import WebLayout from "@/Layouts/WebLayout.vue";
 import ServicesSection from "@/Components/WebComponents/ServicesSection.vue";
