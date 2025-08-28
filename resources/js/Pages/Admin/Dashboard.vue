@@ -1,11 +1,13 @@
 <template>
   <div class="min-h-screen bg-background">
     <!-- Admin Header -->
-    <header class="border-b border-border/50 bg-card">
+    <header class="flex justify-center sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:bg-background/20 dark:supports-[backdrop-filter]:bg-background/30">
       <div class="container px-4 py-4 mx-auto">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-4">
-            <a href="/" class="text-2xl font-bold font-heading text-primary">
+            <a href="/" class="flex items-center gap-2 text-2xl font-bold font-heading text-primary">
+              <Bot class="w-8 h-8 text-primary dark:text-primary/80" />
+
               Jurisis
             </a>
             <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md bg-secondary text-secondary-foreground">
@@ -332,6 +334,7 @@ import {
   Star,
   Plus,
   Edit,
+  Bot
 } from 'lucide-vue-next'
 
 const activeTab = ref('overview')

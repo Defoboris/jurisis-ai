@@ -40,6 +40,7 @@
                 message.sender === 'user' ? 'justify-end' : 'justify-start',
               ]"
             >
+              <!-- AI Avatar -->
               <div
                 v-if="message.sender === 'ai'"
                 class="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground"
@@ -47,20 +48,31 @@
                 <component :is="Bot" class="w-4 h-4" />
               </div>
 
+              <!-- Message Content -->
               <div
                 :class="[
                   'max-w-[70%] rounded-lg px-4 py-2',
                   message.sender === 'user'
                     ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted',
+                    : 'bg-slate-100',
                 ]"
               >
-                <p class="text-sm">{{ message.content }}</p>
+                <p v-if="message.sender === 'user'" class="text-sm">
+                  {{ message.content }}
+                </p>
+
+                <p
+                  v-else
+                  class="text-sm"
+                  v-html="formatMessageContent(message.content)"
+                ></p>
+
                 <span class="block mt-1 text-xs opacity-70">
                   {{ formatTime(message.timestamp) }}
                 </span>
               </div>
 
+              <!-- User Avatar -->
               <div
                 v-if="message.sender === 'user'"
                 class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-200"
@@ -69,6 +81,7 @@
               </div>
             </div>
 
+            <!-- Typing Indicator -->
             <div v-if="isTyping" class="flex justify-start gap-3">
               <div
                 class="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground"
@@ -120,12 +133,12 @@
                 @keypress="handleKeyPress"
                 :disabled="isTyping"
                 placeholder="Tapez votre question juridique..."
-                class="flex flex-1 w-full h-10 px-3 py-2 text-sm border rounded-md border-input bg-background ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                class="flex flex-1 w-full h-10 px-3 py-2 text-sm border rounded-md border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               />
               <button
                 @click="handleSendMessage"
                 :disabled="!inputValue.trim() || isTyping"
-                class="inline-flex items-center justify-center w-10 h-10 text-sm font-medium transition-colors rounded-md whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90"
+                class="inline-flex items-center justify-center w-10 h-10 text-sm font-medium transition-colors rounded-md bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               >
                 <component :is="Send" class="w-4 h-4" />
               </button>
@@ -142,12 +155,20 @@
           <p class="mb-4 text-muted-foreground">
             Besoin d'un conseil personnalisé ? Consultez nos experts.
           </p>
-          <Link
-            :href="route('lawyers')"
-            class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90"
-          >
-            Voir les Avocats Experts
-          </Link>
+          <div class="flex justify-center gap-4">
+            <Link
+              :href="route('conversations')"
+              class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            >
+              Parler à un Avocat
+            </Link>
+            <Link
+              :href="route('lawyers')"
+              class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            >
+              Voir les Avocats Experts
+            </Link>
+          </div>
         </div>
       </div>
     </div>
@@ -156,6 +177,7 @@
 <script setup>
 import { ref, reactive, nextTick, watch } from "vue";
 import { Link } from "@inertiajs/vue3";
+import { marked } from "marked";
 import { Bot, Send, User, Sparkles } from "lucide-vue-next";
 import Header from "@/Components/WebComponents/Header.vue";
 
@@ -236,6 +258,11 @@ const handleKeyPress = (e) => {
     e.preventDefault();
     handleSendMessage();
   }
+};
+
+const formatMessageContent = (content) => {
+  // Convert markdown to HTML
+  return marked.parse(content);
 };
 
 watch(messages, () => scrollToBottom(), { deep: true });

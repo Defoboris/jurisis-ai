@@ -52,7 +52,7 @@
 
           <div class="relative">
             <img
-              src="/ai-legal-consultation-interface.png"
+              src="../../../../public/assets/images/jurisis-ai.png"
               alt="Interface de consultation juridique IA"
               class="w-full h-auto rounded-lg shadow-lg"
             />

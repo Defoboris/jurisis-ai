@@ -1,7 +1,7 @@
 <template>
   <WebLayout>
     <section
-      class="relative py-20 overflow-hidden lg:py-32 bg-gradient-to-br from-background via-muted/30 to-background dark:from-background/20 dark:via-muted/50 dark:to-background/20"
+      class="relative py-20 overflow-hidden lg:py-32 bg-background from-background via-muted/30 to-background dark:from-background/20 dark:via-muted/50 dark:to-background/20"
     >
       <div class="container relative px-4 mx-auto">
         <div class="max-w-4xl mx-auto mb-16 text-center">

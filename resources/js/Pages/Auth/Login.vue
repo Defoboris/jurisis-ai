@@ -28,67 +28,87 @@ const submit = () => {
     });
 };
 </script>
-
 <template>
-    <GuestLayout>
-        <Head title="Log in" />
+  <GuestLayout>
+    <Head title="Log in" />
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
+    <div
+      v-if="status"
+      class="mb-4 font-medium text-sm text-[hsl(var(--primary))]"
+    >
+      {{ status }}
+    </div>
+
+    <form @submit.prevent="submit" class="space-y-6">
+      <!-- Email -->
+      <div>
+        <InputLabel for="email" value="Email" class="text-[hsl(var(--foreground))]" />
+
+        <TextInput
+          id="email"
+          type="email"
+          class="mt-1 block w-full border border-[hsl(var(--border))] focus:ring-[hsl(var(--ring))]"
+          v-model="form.email"
+          required
+          autofocus
+          autocomplete="username"
+        />
+
+        <InputError class="mt-2 text-[hsl(var(--destructive))]" :message="form.errors.email" />
+      </div>
+
+      <!-- Password -->
+      <div>
+        <InputLabel for="password" value="Password" class="text-[hsl(var(--foreground))]" />
+
+        <TextInput
+          id="password"
+          type="password"
+          class="mt-1 block w-full border border-[hsl(var(--border))] focus:ring-[hsl(var(--ring))]"
+          v-model="form.password"
+          required
+          autocomplete="current-password"
+        />
+
+        <InputError class="mt-2 text-[hsl(var(--destructive))]" :message="form.errors.password" />
+      </div>
+
+      <!-- Remember -->
+      <div class="block">
+        <label class="flex items-center">
+          <Checkbox name="remember" v-model:checked="form.remember" />
+          <span class="ms-2 text-sm text-[hsl(var(--muted-foreground))]">
+            Remember me
+          </span>
+        </label>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-between">
+        <Link
+          v-if="canResetPassword"
+          :href="route('password.request')"
+          class="underline text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]"
+        >
+          Forgot your password?
+        </Link>
+
+        <PrimaryButton
+          class="ms-4 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--ring))]"
+          :class="{ 'opacity-50': form.processing }"
+          :disabled="form.processing"
+        >
+          Log in
+        </PrimaryButton>
+      </div>
+      <div>
+        <Link
+          :href="route('register')"
+          class=" text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]"
+        >
+          I don't have an account?
+        </Link>
         </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Forgot your password?
-                </Link>
-
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
+    </form>
+  </GuestLayout>
 </template>

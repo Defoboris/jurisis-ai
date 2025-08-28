@@ -28,6 +28,13 @@
           Parler à Jurisis
         </Link>
         <Link
+          :href="route('conversations')"
+          class="flex items-center gap-1 font-medium transition-colors text-foreground hover:text-primary"
+        >
+          <Users class="w-4 h-4" />
+          Conversations
+        </Link>
+        <Link
           :href="route('lawyers')"
           class="font-medium transition-colors text-foreground hover:text-primary dark:text-foreground/90 dark:hover:text-primary/80"
         >
@@ -45,14 +52,6 @@
           </button>
         </Link>
 
-        <Link :href="route('lawyers')">
-          <button
-            class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary/80 dark:text-primary-foreground/90 dark:hover:bg-primary/70"
-          >
-            Voir les Experts
-          </button>
-        </Link>
-
         <button
           class="inline-flex items-center justify-center w-10 h-10 text-sm font-medium transition-colors rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/80 dark:hover:text-accent-foreground/90 md:hidden"
         >
@@ -65,5 +64,12 @@
 
 <script setup>
 import { Link, router } from "@inertiajs/vue3";
-import { Bot, Menu, User, Settings, MessageSquare } from "lucide-vue-next";
+import {
+  Bot,
+  Menu,
+  User,
+  Settings,
+  MessageSquare,
+  Users,
+} from "lucide-vue-next";
 </script>

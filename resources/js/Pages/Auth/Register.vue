@@ -19,85 +19,93 @@ const submit = () => {
     });
 };
 </script>
-
 <template>
-    <GuestLayout>
-        <Head title="Register" />
+  <GuestLayout>
+    <Head title="Register" />
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Name" />
+    <form @submit.prevent="submit" class="space-y-6">
+      <!-- Name -->
+      <div>
+        <InputLabel for="name" value="Name" class="text-[hsl(var(--foreground))]" />
 
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
+        <TextInput
+          id="name"
+          type="text"
+          class="mt-1 block w-full border border-[hsl(var(--border))] focus:ring-[hsl(var(--ring))]"
+          v-model="form.name"
+          required
+          autofocus
+          autocomplete="name"
+        />
 
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
+        <InputError class="mt-2 text-[hsl(var(--destructive))]" :message="form.errors.name" />
+      </div>
 
-            <div class="mt-4">
-                <InputLabel for="email" value="Email" />
+      <!-- Email -->
+      <div>
+        <InputLabel for="email" value="Email" class="text-[hsl(var(--foreground))]" />
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
+        <TextInput
+          id="email"
+          type="email"
+          class="mt-1 block w-full border border-[hsl(var(--border))] focus:ring-[hsl(var(--ring))]"
+          v-model="form.email"
+          required
+          autocomplete="username"
+        />
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+        <InputError class="mt-2 text-[hsl(var(--destructive))]" :message="form.errors.email" />
+      </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+      <!-- Password -->
+      <div>
+        <InputLabel for="password" value="Password" class="text-[hsl(var(--foreground))]" />
 
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="new-password"
-                />
+        <TextInput
+          id="password"
+          type="password"
+          class="mt-1 block w-full border border-[hsl(var(--border))] focus:ring-[hsl(var(--ring))]"
+          v-model="form.password"
+          required
+          autocomplete="new-password"
+        />
 
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
+        <InputError class="mt-2 text-[hsl(var(--destructive))]" :message="form.errors.password" />
+      </div>
 
-            <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
+      <!-- Password Confirmation -->
+      <div>
+        <InputLabel for="password_confirmation" value="Confirm Password" class="text-[hsl(var(--foreground))]" />
 
-                <TextInput
-                    id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password_confirmation"
-                    required
-                    autocomplete="new-password"
-                />
+        <TextInput
+          id="password_confirmation"
+          type="password"
+          class="mt-1 block w-full border border-[hsl(var(--border))] focus:ring-[hsl(var(--ring))]"
+          v-model="form.password_confirmation"
+          required
+          autocomplete="new-password"
+        />
 
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div>
+        <InputError class="mt-2 text-[hsl(var(--destructive))]" :message="form.errors.password_confirmation" />
+      </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    :href="route('login')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Already registered?
-                </Link>
+      <!-- Actions -->
+      <div class="flex items-center justify-between">
+        <Link
+          :href="route('login')"
+          class="underline text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]"
+        >
+          Already registered?
+        </Link>
 
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Register
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
+        <PrimaryButton
+          class="ms-4 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--ring))]"
+          :class="{ 'opacity-50': form.processing }"
+          :disabled="form.processing"
+        >
+          Register
+        </PrimaryButton>
+      </div>
+    </form>
+  </GuestLayout>
 </template>

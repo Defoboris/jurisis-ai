@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Website\AboutController;
 use App\Http\Controllers\Website\ArticleController;
 use App\Http\Controllers\Website\ChatController;
+use App\Http\Controllers\Website\ConversationController;
 use App\Http\Controllers\Website\HomeController;
 use App\Http\Controllers\Website\LawyerController;
 use Illuminate\Foundation\Application;
@@ -38,6 +39,8 @@ Route::get('/articles', [ArticleController::class, 'index'])->name('articles');
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 Route::get('/chat/stream', [ChatController::class, 'stream'])->name('chat.stream'); 
+
+Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
