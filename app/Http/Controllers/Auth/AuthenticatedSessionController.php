@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -49,5 +50,18 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+
+    public function suspend(User $user)
+    {
+        $user->update(['status' => 'suspended']);
+        return back()->with('success', 'User suspended');
+    }
+
+    public function unsuspend(User $user)
+    {
+        $user->update(['status' => 'active']);
+        return back()->with('success', 'User active again');
     }
 }

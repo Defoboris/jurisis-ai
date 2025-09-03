@@ -54,3 +54,28 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
+
+// Member-only routes
+// Route::middleware(['auth','member'])->group(function () {
+//     Route::resource('appointments', Member\AppointmentController::class);
+//     Route::post('chatbot/message', [Member\ChatbotController::class, 'store']);
+// });
+
+// // Lawyer-only routes
+// Route::middleware(['auth','lawyer'])->group(function () {
+//     Route::resource('lawyer/appointments', Lawyer\AppointmentController::class);
+//     Route::put('lawyer/page', [Lawyer\LawyerPageController::class, 'update']);
+// });
+
+// // Admin-only routes
+// Route::middleware(['auth','admin'])->group(function () {
+//     Route::resource('admin/users', Admin\UserController::class);
+//     Route::resource('admin/lawyers', Admin\LawyerController::class);
+//     Route::resource('admin/plans', Admin\PlanController::class);
+// });
+
+// Members can only access chatbot, appointments, subscriptions.
+
+// Lawyers can only manage their lawyer page & client appointments.
+
+// Admins can manage everything.
