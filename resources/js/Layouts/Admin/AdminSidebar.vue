@@ -4,7 +4,7 @@
     :class="{ '-translate-x-full': !sidebarOpen }"
   >
     <!-- Header -->
-    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+    <div class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
       <div class="flex items-center gap-2">
         <h2 class="text-xl font-bold text-primary">Jurisis</h2>
         <span class="bg-primary text-white px-2 py-0.5 rounded text-xs font-semibold uppercase">Admin</span>
@@ -18,23 +18,24 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 px-4 py-4 overflow-y-auto">
+    <nav class="sticky flex-1 px-4 py-4 overflow-y-auto top-16">
       <ul class="space-y-1">
         <li v-for="item in menuItems" :key="item.id">
-          <button
+          <Link
             class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-700 hover:bg-gray-100 transition"
-            :class="currentPage === item.id ? 'bg-primary text-white hover:bg-indigo-700' : ''"
+            :class="page.component === item.page ? 'bg-primary text-white hover:bg-primary' : ''"
+            :href="route(item.id)"
             @click="$emit('pageChange', item.id)"
           >
             <component :is="item.icon" class="w-5 h-5" />
             <span class="font-medium">{{ item.label }}</span>
-          </button>
+          </Link>
         </li>
       </ul>
     </nav>
 
     <!-- Footer -->
-    <div class="px-6 py-4 border-t border-gray-200">
+    <div class="sticky bottom-0 z-10 px-6 py-4 bg-white border-t border-gray-200">
       <div class="flex items-center gap-3">
         <div class="flex items-center justify-center w-10 h-10 text-sm font-semibold text-white rounded-full bg-primary">
           SA
@@ -47,35 +48,25 @@
     </div>
   </aside>
 </template>
-<script setup lang="ts">
-import { 
-  X,
-  Home,
-  Users,
-  UserRound,
-  CreditCard,
-  MessageSquare,
-  BarChart3
-} from 'lucide-vue-next'
+
+<script setup>
+import { Link } from '@inertiajs/vue3'
+import { X, Home, Users, UserRound, CreditCard, MessageSquare } from 'lucide-vue-next'
+
 import { usePage } from '@inertiajs/vue3'
 
-interface Props {
-  currentPage: string
-  sidebarOpen: boolean
-}
+const props = defineProps({
+  sidebarOpen: Boolean
+})
 
-defineProps<Props>()
-const emit = defineEmits<{
-  pageChange: [page: string]
-  close: []
-}>()
+const emit = defineEmits(['pageChange', 'close']);
+const page = usePage();
 
 const menuItems = [
-  { id: 'dashboard', label: 'Tableau de bord', icon: Home },
-  { id: 'users', label: 'Utilisateurs', icon: Users },
-  { id: 'lawyers', label: 'Avocats', icon: UserRound },
-  { id: 'subscriptions', label: 'Abonnements', icon: CreditCard },
-  { id: 'chatbot', label: 'Chatbot', icon: MessageSquare },
-  { id: 'analytics', label: 'Analytiques', icon: BarChart3 }
+  { id: 'super-admin.dashboard', label: 'Tableau de bord', page: 'SuperAdmin/Dashboard', icon: Home },
+  { id: 'super-admin.user-management', label: 'Utilisateurs', page: 'SuperAdmin/UserManagement', icon: Users },
+  { id: 'super-admin.lawyerManagement', label: 'Avocats', page: 'SuperAdmin/LawyerManagement', icon: UserRound },
+  { id: 'super-admin.subscriptionManagement', label: 'Abonnements', page: 'SuperAdmin/SubscriptionManagement', icon: CreditCard },
+  { id: 'super-admin.chatbot-management', label: 'Chatbot', page: 'SuperAdmin/ChatbotManagement', icon: MessageSquare }
 ]
 </script>

@@ -18,6 +18,7 @@ class EnsureUserIsAdmin
         if (! $request->user() || $request->user()->role !== 'admin') {
             abort(403, 'Only admins can access this resource.');
         }
+
         return $next($request);
     }
 }

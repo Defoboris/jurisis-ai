@@ -15,9 +15,10 @@ class EnsureUserIsLawyer
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user() || $request->user()->role !== 'lawyer') {
+        if (!$request->user() || $request->user()->role !== 'lawyer' && $request->user()->role !== 'admin') {
             abort(403, 'Only lawyers can access this resource.');
         }
+        
         return $next($request);
     }
 }

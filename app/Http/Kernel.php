@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         'member' => \App\Http\Middleware\EnsureUserIsMember::class,
         'lawyer' => \App\Http\Middleware\EnsureUserIsLawyer::class,
+        // 'role.redirect' => \App\Http\Middleware\RedirectIfRole::class,
     ];
 }

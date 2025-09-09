@@ -16,6 +16,7 @@
       <nav class="items-center hidden gap-6 md:flex">
         <Link
           href="/"
+          :class="page.url === '/' ? 'text-primary font-extrabold' : ''"
           class="font-medium transition-colors text-foreground hover:text-primary dark:text-foreground/90 dark:hover:text-primary/80"
         >
           Accueil
@@ -23,6 +24,7 @@
         <Link
           :href="route('chat')"
           class="flex items-center gap-1 font-medium transition-colors text-foreground hover:text-primary"
+          :class="page.url === '/chat' ? 'text-primary font-extrabold' : ''"
         >
           <MessageSquare class="w-4 h-4" />
           Parler à Jurisis
@@ -30,6 +32,7 @@
         <Link
           :href="route('conversations')"
           class="flex items-center gap-1 font-medium transition-colors text-foreground hover:text-primary"
+          :class="page.url === '/conversations' ? 'text-primary font-extrabold' : ''"
         >
           <Users class="w-4 h-4" />
           Conversations
@@ -37,6 +40,7 @@
         <Link
           :href="route('lawyers')"
           class="font-medium transition-colors text-foreground hover:text-primary dark:text-foreground/90 dark:hover:text-primary/80"
+          :class="page.url === '/lawyers' ? 'text-primary font-extrabold' : ''"
         >
           Avocats Experts
         </Link>
@@ -63,6 +67,7 @@
 </template>
 
 <script setup>
+import { usePage } from "@inertiajs/vue3";
 import { Link, router } from "@inertiajs/vue3";
 import {
   Bot,
@@ -72,4 +77,6 @@ import {
   MessageSquare,
   Users,
 } from "lucide-vue-next";
+
+const page = usePage();
 </script>
