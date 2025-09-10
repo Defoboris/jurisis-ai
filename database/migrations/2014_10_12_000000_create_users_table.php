@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
-            $table->enum('role', ['visitor','member','lawyer','admin'])->default('member');
+            $table->enum('role', ['visitor','member','lawyer','admin'])->default('visitor');
             $table->enum('status', ['active','suspended'])->default('active');
             $table->timestamp('blocked_until')->nullable();
 

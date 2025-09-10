@@ -19,6 +19,14 @@ class LawyerController extends Controller
         ]);
     }
 
+    public function lawyerManagement()
+    {
+         $lawyers = Lawyer::with('user')->paginate(20);
+        return Inertia::render('SuperAdmin/LawyerManagement',[
+            'lawyers' => $lawyers
+        ]);
+    }
+
     public function show()
     {
         return Inertia::render('Web/Lawyer/LawyerDetails');

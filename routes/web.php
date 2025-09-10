@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Website\AboutController;
 use App\Http\Controllers\Website\ArticleController;
@@ -41,6 +42,8 @@ Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 Route::get('/chat/stream', [ChatController::class, 'stream'])->name('chat.stream'); 
 
 Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations');
+
+Route::get('/subscriptions-plans', [SubscriptionController::class, 'index'])->name('subscriptions-plans');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

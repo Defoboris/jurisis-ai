@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PlanRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,10 @@ class PlanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'price_cents' => 'required|integer|min:0',
-            'currency' => 'required|string|size:3',
-            'interval' => 'required|in:monthly,yearly',
-            'features' => 'nullable|array',
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $this->id,
+            'role'  => 'required|in:member,lawyer,admin',
+            'status'=> 'required|in:active,suspended',
         ];
     }
 }

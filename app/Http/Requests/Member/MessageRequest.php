@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Member;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PlanRequest extends FormRequest
+class MessageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()->isAdmin();
+        return $this->user()->isMember();
     }
 
     /**
@@ -21,12 +21,6 @@ class PlanRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => 'required|string|max:255',
-            'price_cents' => 'required|integer|min:0',
-            'currency' => 'required|string|size:3',
-            'interval' => 'required|in:monthly,yearly',
-            'features' => 'nullable|array',
-        ];
+        return ['content'=>'required|string|max:5000'];
     }
 }

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Website;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreChatRequest;
+use App\Models\ChatbotMessage;
+use App\Models\ChatbotSession;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use OpenAI\Laravel\Facades\OpenAI;
+use Illuminate\Support\Facades\Log;
 
 class ChatController extends Controller
 {
@@ -16,40 +19,87 @@ class ChatController extends Controller
         return Inertia::render('Web/Chat/Chat');
     }
 
-    public function stream(Request $request): StreamedResponse
+    public function stream(Request $request)
     {
-        $userMessage = $request->query('message'); // from query string
-        
-        if (!$userMessage) {
-            abort(400, 'Message required');
-        }
+        try {
+            $session = ChatbotSession::firstOrCreate(
+                ['user_id' => $request->user()->id],
+                ['origin' => 'web', 'is_limited' => false, 'request_number' => 5]
+            );
 
-        $messages = [
-            ['role' => 'user', 'content' => $userMessage]
-        ];
-
-        return new StreamedResponse(function () use ($messages) {
-            $stream = OpenAI::chat()->createStreamed([
-                'model' => 'gpt-4o-mini',
-                'messages' => $messages,
-                'stream' => true,
-            ]);
-
-            foreach ($stream as $event) {
-                if (isset($event->choices[0]->delta->content)) {
-                    echo "data: " . $event->choices[0]->delta->content . "\n\n";
-                    ob_flush();
-                    flush();
-                }
+            if ($session->is_limited || $session->request_number <= 0) {
+                return ApiResponse::error('Vous avez atteint le nombre maximum de requêtes', 429);
             }
 
-            echo "data: [DONE]\n\n";
-            ob_flush();
-            flush();
-        }, 200, [
-            'Content-Type' => 'text/event-stream',
-            'Cache-Control' => 'no-cache',
-            'X-Accel-Buffering' => 'no', // important for nginx
-        ]);
-    } 
+            $userMessage = $request->query('message');
+            if (!$userMessage) {
+                return ApiResponse::error('Message required', 422);
+            }
+
+            // decrement
+            $session->decrement('request_number');
+            if ($session->request_number - 1 <= 0) {
+                $session->is_limited = true;
+                $session->save();
+            }
+
+            $userMessage = $request->query('message');
+
+            if (!$userMessage) {
+                abort(400, 'Message required');
+            }
+
+            // Save the user's message
+            $chatbotMessage = new ChatbotMessage();
+            $chatbotMessage->chatbot_session_id = $session->id;
+            $chatbotMessage->role = 'user';
+            $chatbotMessage->content = $userMessage;
+            $chatbotMessage->save();
+
+            $messages = [
+                ['role' => 'user', 'content' => $userMessage]
+            ];
+
+            $streamResponse = new StreamedResponse(function () use ($messages, $chatbotMessage) {
+                $stream = OpenAI::chat()->createStreamed([
+                    'model' => 'gpt-4o-mini',
+                    'messages' => $messages,
+                    'stream' => true,
+                ]);
+
+                $responseText = '';
+
+                foreach ($stream as $event) {
+                    if (isset($event->choices[0]->delta->content)) {
+                        $chunk = $event->choices[0]->delta->content;
+                        echo "data: " . $chunk . "\n\n";
+                        $responseText .= $chunk;
+
+                        ob_flush();
+                        flush();
+                    }
+                }
+
+                // Save the assistant's full response after streaming
+                $chatbotMessage->response = $responseText;
+                $chatbotMessage->role = 'assistant';
+
+                Log::info(json_encode($chatbotMessage));
+                $chatbotMessage->save();
+
+                echo "data: [DONE]\n\n";
+                ob_flush();
+                flush();
+            }, 200, [
+                'Content-Type' => 'text/event-stream',
+                'Cache-Control' => 'no-cache',
+                'X-Accel-Buffering' => 'no',
+            ]);
+
+            return $streamResponse;
+        } catch (\Throwable $e) {
+            Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return ApiResponse::error('Une erreur s’est produite, veuillez réessayer plus tard.', 500);
+        }
+    }
 }

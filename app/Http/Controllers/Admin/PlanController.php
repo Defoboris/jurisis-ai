@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PlanRequest;
 use App\Models\SubscriptionPlan;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PlanController extends Controller
 {
@@ -14,7 +15,9 @@ class PlanController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('SuperAdmin/SubscriptionManagement', [
+            'plans' => SubscriptionPlan::all()
+        ]);
     }
 
     /**

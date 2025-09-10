@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('origin')->default('web');
             $table->boolean('is_limited')->default(false);
+            $table->integer('request_number')->default(5);
             $table->timestamps();
         });
     }

@@ -14,6 +14,7 @@ class ChatbotMessage extends Model
         'chatbot_session_id',
         'role',
         'content',
+        'response',
         'tokens',
     ];
 

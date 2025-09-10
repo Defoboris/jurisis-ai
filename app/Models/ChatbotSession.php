@@ -15,6 +15,7 @@ class ChatbotSession extends Model
         'user_id',
         'origin',
         'is_limited',
+        'request_number',
     ];
 
     public function user(): BelongsTo

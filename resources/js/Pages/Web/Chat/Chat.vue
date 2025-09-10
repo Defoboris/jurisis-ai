@@ -176,10 +176,13 @@
 </template>
 <script setup>
 import { ref, reactive, nextTick, watch } from "vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, router, usePage } from "@inertiajs/vue3";
 import { marked } from "marked";
 import { Bot, Send, User, Sparkles } from "lucide-vue-next";
 import Header from "@/Components/WebComponents/Header.vue";
+import { toast } from "vue3-toastify";
+
+const page = usePage();
 
 const messages = ref([
   {
@@ -211,7 +214,12 @@ const scrollToBottom = () => {
 const formatTime = (timestamp) =>
   timestamp.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 
-const handleSendMessage = () => {
+const handleSendMessage = async () => {
+  if (!page.props.auth.user) {
+    router.visit(route("login"));
+    return;
+  }
+
   if (!inputValue.value.trim()) return;
 
   const userMessage = {
@@ -226,7 +234,7 @@ const handleSendMessage = () => {
   inputValue.value = "";
   isTyping.value = true;
 
-  let aiMessage = {
+  const aiMessage = {
     id: (Date.now() + 1).toString(),
     content: "",
     sender: "ai",
@@ -234,23 +242,57 @@ const handleSendMessage = () => {
   };
   messages.value.push(aiMessage);
 
-  const eventSource = new EventSource(
-    route("chat.stream") + `?message=${encodeURIComponent(currentInput)}`
-  );
+  try {
+    // First: check if the endpoint responds with JSON error
+    const checkResponse = await fetch(
+      route("chat.stream") + `?message=${encodeURIComponent(currentInput)}`
+    );
 
-  eventSource.onmessage = (event) => {
-    if (event.data === "[DONE]") {
+    if (
+      !checkResponse.ok ||
+      checkResponse.headers.get("content-type")?.includes("application/json")
+    ) {
+      const errorData = await checkResponse.json().catch(() => null);
+      toast.error(errorData?.message || "Something went wrong. Try again.");
       isTyping.value = false;
-      eventSource.close();
       return;
     }
-    aiMessage.content += event.data;
-  };
 
-  eventSource.onerror = () => {
+    // If OK: switch to real stream (EventSource)
+    const eventSource = new EventSource(
+      route("chat.stream") + `?message=${encodeURIComponent(currentInput)}`
+    );
+
+    eventSource.onmessage = (event) => {
+      if (event.data === "[DONE]") {
+        isTyping.value = false;
+        eventSource.close();
+        return;
+      }
+
+      aiMessage.content += event.data;
+
+      if (aiMessage.content.length < 5) {
+        toast.warn(
+          "Veuillez patienter, votre message est en cours de traitement",
+          {
+            autoClose: 3000,
+            position: "top-right",
+          }
+        );
+      }
+    };
+
+    eventSource.onerror = () => {
+      toast.error("Stream interrupted. Please try again.");
+      isTyping.value = false;
+      eventSource.close();
+    };
+  } catch (err) {
+    console.error(err);
+    toast.error("Network error. Please try again.");
     isTyping.value = false;
-    eventSource.close();
-  };
+  }
 };
 
 const handleKeyPress = (e) => {

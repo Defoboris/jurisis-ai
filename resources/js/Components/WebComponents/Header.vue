@@ -44,6 +44,14 @@
         >
           Avocats Experts
         </Link>
+        <Link
+          :href="route('subscriptions-plans')"
+          class="flex items-center gap-1 font-medium transition-colors text-foreground hover:text-primary"
+          :class="page.url === '/subscriptions-plans' ? 'text-primary font-extrabold' : ''"
+        >
+          <Podcast class="w-4 h-4" />
+          Abonnements
+        </Link>
       </nav>
 
       <div class="flex items-center gap-4">
@@ -76,6 +84,7 @@ import {
   Settings,
   MessageSquare,
   Users,
+  Podcast
 } from "lucide-vue-next";
 
 const page = usePage();

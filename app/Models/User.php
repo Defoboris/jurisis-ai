@@ -102,4 +102,9 @@ class User extends Authenticatable
     {
         return $this->role === 'lawyer';
     }
+
+    public function isMember(): bool
+    {
+        return $this->role === 'member';
+    }
 }

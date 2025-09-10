@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('chatbot_session_id')->constrained()->cascadeOnDelete();
             $table->enum('role', ['system', 'user', 'assistant']);
             $table->longText('content');
+            $table->longText('response')->nullable();
             $table->unsignedInteger('tokens')->nullable();
             $table->timestamps();
         });
