@@ -175,7 +175,7 @@
   </div>
 </template>
 <script setup>
-import { ref, reactive, nextTick, watch } from "vue";
+import { ref, reactive, nextTick, watch, onMounted } from "vue";
 import { Link, router, usePage } from "@inertiajs/vue3";
 import { marked } from "marked";
 import { Bot, Send, User, Sparkles } from "lucide-vue-next";
@@ -191,12 +191,43 @@ const messages = ref([
       "Bonjour ! Je suis Jurisis, votre assistant juridique IA. Comment puis-je vous aider aujourd'hui ?",
     sender: "ai",
     timestamp: new Date(),
-  },
+  }
 ]);
+
+const props = defineProps({
+  chatbotMessages: {
+    type: Array,
+    default: () => [],
+  }
+})
 
 const inputValue = ref("");
 const isTyping = ref(false);
 const messagesEndRef = ref(null);
+
+onMounted(() => {
+  props.chatbotMessages.forEach((msg, index) => {
+    // Push user message
+    if (msg.content) {
+      messages.value.push({
+        id: `u-${index}`,
+        content: msg.content,
+        sender: "user",
+        timestamp: new Date(),
+      });
+    }
+
+    // Push AI response
+    if (msg.response) {
+      messages.value.push({
+        id: `a-${index}`,
+        content: msg.response,
+        sender: "ai",
+        timestamp: new Date(),
+      });
+    }
+  });
+});
 
 const quickQuestions = [
   "Comment divorcer par consentement mutuel ?",
@@ -253,7 +284,7 @@ const handleSendMessage = async () => {
       checkResponse.headers.get("content-type")?.includes("application/json")
     ) {
       const errorData = await checkResponse.json().catch(() => null);
-      toast.error(errorData?.message || "Something went wrong. Try again.");
+      toast.warn(errorData?.message || "Something went wrong. Try again.");
       isTyping.value = false;
       return;
     }

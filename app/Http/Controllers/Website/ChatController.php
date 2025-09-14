@@ -16,7 +16,23 @@ class ChatController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Web/Chat/Chat');
+        // If the user is not authenticated → redirect to login
+        // if (!auth()->check()) {
+        //     return redirect()->route('login')
+        //         ->with('error', 'Vous devez vous connecter pour accéder au chatbot.');
+        // }
+
+        $userId = auth()->id();
+
+        $chatbotSession = ChatbotSession::where('user_id', $userId)->first();
+
+        $chatbotMessages = $chatbotSession
+            ? ChatbotMessage::where('chatbot_session_id', $chatbotSession->id)->get()
+            : collect(); // empty collection if no session
+
+        return Inertia::render('Web/Chat/Chat', [
+            'chatbotMessages' => $chatbotMessages,
+        ]);
     }
 
     public function stream(Request $request)

@@ -1,6 +1,6 @@
 <template>
   <WebLayout>
-    <ServicesSection />
+    <ServicesSection :subscriptionPlans="subscriptionPlans" />
   </WebLayout>
 </template>
 
@@ -12,4 +12,11 @@ import ServicesSection from "@/Components/WebComponents/ServicesSection.vue";
 
 const message = ref("");
 const showChat = ref(false);
+
+const props = defineProps({
+  subscriptionPlans: {
+    type: Array,
+    default: () => [],
+  }
+})
 </script>

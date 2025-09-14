@@ -17,7 +17,12 @@ return new class extends Migration
             $table->unsignedInteger('price_cents');
             $table->string('currency', 3)->default('EUR');
             $table->enum('interval', ['monthly', 'yearly'])->default('monthly');
+            $table->text('description')->nullable();
+            $table->string('badge')->nullable();
             $table->json('features')->nullable();
+            $table->string('buttonText')->nullable();
+            $table->string('buttonVariant')->default('outline');
+            $table->boolean('is_popular')->default(false);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

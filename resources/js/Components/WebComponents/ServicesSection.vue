@@ -13,7 +13,7 @@
 
       <div class="grid max-w-5xl gap-8 mx-auto md:grid-cols-3">
         <div
-          v-for="(tier, index) in pricingTiers"
+          v-for="(tier, index) in subscriptionPlans"
           :key="index"
           :class="[
             'relative bg-card border rounded-lg p-6 shadow-sm transition-all duration-300 hover:shadow-lg',
@@ -35,7 +35,7 @@
           <header class="pb-6 text-center">
             <div class="mb-3 text-xl font-semibold font-heading text-foreground">{{ tier.name }}</div>
             <div class="mb-4">
-              <span class="text-4xl font-bold font-heading text-primary">{{ tier.price }}</span>
+              <span class="text-4xl font-bold font-heading text-primary">{{ tier.price_cents }}</span>
               <span
                 v-if="tier.price !== 'Gratuit' && tier.price !== 'Parlons-en'"
                 class="text-lg text-muted-foreground"
@@ -78,6 +78,13 @@
 <script setup>
 import { Check, Star } from 'lucide-vue-next'
 
+const props = defineProps({
+  subscriptionPlans: {
+    type: Array,
+    default: () => []
+  }
+})
+
 const pricingTiers = [
   {
     name: "Découverte",
@@ -85,10 +92,9 @@ const pricingTiers = [
     description: "Pour découvrir notre plateforme",
     badge: null,
     features: [
-      "Dialogue avec les juristes",
+      "Consulter la liste des juristes",
       "Accès limité au bot Jurisis",
       "Analyse simple de documents",
-      "Participation au développement de l'IA",
     ],
     buttonText: "Parler à Jurisis",
     buttonVariant: "outline",

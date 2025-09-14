@@ -33,19 +33,45 @@ class DatabaseSeeder extends Seeder
 
         // Subscription plans
         SubscriptionPlan::create([
-            'name' => 'Basic',
-            'price_cents' => 9900,
+            'name' => 'Découverte',
+            'price_cents' => 10,
             'currency' => 'USD',
             'interval' => 'monthly',
-            'features' => ['Chatbot limited', 'Contact 1 lawyer'],
+            'description' => 'Pour découvrir notre plateforme',
+            'badge' => 'Découverte',
+            'features' => ["Consulter la liste des juristes", "Accès limité au bot Jurisis", "Analyse simple de documents", "Accès à tous nos experts"],
+            'buttonText' => 'Parler à Jurisis',
+            'buttonVariant' => 'outline',
+            'is_popular' => true,
+            'is_active' => true,
         ]);
 
         SubscriptionPlan::create([
-            'name' => 'Pro',
-            'price_cents' => 19900,
+            'name' => "Soutenir l'initiative",
+            'price_cents' => 30,
             'currency' => 'USD',
             'interval' => 'monthly',
-            'features' => ['Full chatbot', 'Unlimited lawyers', 'Appointments'],
+            'description' => 'Pour des indépendants, PME',
+            'badge' => 'Soutenir l\'initiative',
+            'features' => ["Dialogue avec les juristes", "Accès à tous nos experts", "Génération automatique (IA)", "Participation au développement de l'IA"],
+            'buttonText' => 'Soutenir Jurisis',
+            'buttonVariant' => 'default',
+            'is_popular' => true,
+            'is_active' => true,
+        ]);
+
+        SubscriptionPlan::create([
+            'name' => "Plan Business",
+            'price_cents' => 100,
+            'currency' => 'USD',
+            'interval' => 'monthly',
+            'description' => 'Pour les professionnels du droit',
+            'badge' => null,
+            'features' => ["Un chatbot avec vos données", "Votre expertise dans un produit", "Formation aux outils IA", "Participation au développement de l'IA"],
+            'buttonText' => 'Nous contacter',
+            'buttonVariant' => 'outline',
+            'is_popular' => true,
+            'is_active' => true,
         ]);
 
         // Sample Lawyer
