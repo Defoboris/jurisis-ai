@@ -1,100 +1,3 @@
-<script setup>
-import { ref } from "vue";
-
-import {
-  Search, // MagnifyingGlassIcon
-  Plus, // PlusIcon
-} from "lucide-vue-next";
-import AdminLayout from "@/Layouts/Admin/AdminLayout.vue";
-import DataTable from "@/Components/AdminComponents/DataTable.vue";
-import ActionModal from "@/Components/AdminComponents/ActionModal.vue";
-import LawyerModal from "@/Components/AdminComponents/LawyerModal.vue";
-
-const searchQuery = ref("");
-const selectedFilter = ref("all");
-const showAddModal = ref(false);
-const showBlockModal = ref(false);
-const selectedLawyer = ref(null);
-
-const lawyers = ref([
-  {
-    id: 1,
-    name: "Maître Sophie Bernard",
-    email: "sophie.bernard@cabinet-bernard.fr",
-    specialty: "Droit des affaires",
-    firm: "Cabinet Bernard & Associés",
-    status: "Actif",
-    clients: 45,
-    rating: 4.8,
-    joinDate: "12/12/2023",
-  },
-  {
-    id: 2,
-    name: "Maître Paul Durand",
-    email: "paul.durand@durand-avocat.fr",
-    specialty: "Droit immobilier",
-    firm: "Durand Avocats",
-    status: "Actif",
-    clients: 32,
-    rating: 4.6,
-    joinDate: "08/11/2023",
-  },
-  {
-    id: 3,
-    name: "Maître Anne Moreau",
-    email: "anne.moreau@moreau-droit.fr",
-    specialty: "Droit de la famille",
-    firm: "Moreau & Partners",
-    status: "En attente",
-    clients: 0,
-    rating: 0,
-    joinDate: "20/01/2024",
-  },
-]);
-
-const columns = [
-  { key: "name", label: "Nom", sortable: true },
-  { key: "email", label: "Email", sortable: true },
-  { key: "specialty", label: "Spécialité", sortable: true },
-  { key: "firm", label: "Cabinet", sortable: true },
-  { key: "status", label: "Statut", sortable: true },
-  { key: "clients", label: "Clients", sortable: true },
-  { key: "rating", label: "Note", sortable: true },
-  { key: "actions", label: "Actions", sortable: false },
-];
-
-const filterOptions = [
-  { value: "all", label: "Tous les avocats" },
-  { value: "active", label: "Actifs" },
-  { value: "pending", label: "En attente" },
-  { value: "blocked", label: "Bloqués" },
-  { value: "business", label: "Droit des affaires" },
-  { value: "family", label: "Droit de la famille" },
-];
-
-const handleAddLawyer = () => {
-  showAddModal.value = true;
-};
-
-const handleBlockLawyer = (lawyer) => {
-  selectedLawyer.value = lawyer;
-  showBlockModal.value = true;
-};
-
-const confirmBlockLawyer = () => {
-  if (selectedLawyer.value) {
-    console.log("Blocking lawyer:", selectedLawyer.value);
-  }
-  showBlockModal.value = false;
-  selectedLawyer.value = null;
-};
-
-const handleSaveLawyer = (lawyerData) => {
-  console.log("Saving lawyer:", lawyerData);
-  showAddModal.value = false;
-};
-</script>
-
 <template>
   <AdminLayout>
     <div class="lawyer-management">
@@ -136,7 +39,7 @@ const handleSaveLawyer = (lawyerData) => {
       <!-- Lawyers table -->
       <div class="table-container">
         <DataTable
-          :data="lawyers"
+          :data="props.lawyers.data"
           :columns="columns"
           @action="handleBlockLawyer"
         />
@@ -149,7 +52,6 @@ const handleSaveLawyer = (lawyerData) => {
         @save="handleSaveLawyer"
         @cancel="showAddModal = false"
       />
-
       <!-- Block lawyer modal -->
       <ActionModal
         v-if="showBlockModal"
@@ -164,6 +66,110 @@ const handleSaveLawyer = (lawyerData) => {
     </div>
   </AdminLayout>
 </template>
+
+<script setup>
+import { ref } from "vue";
+
+import {
+  Search, // MagnifyingGlassIcon
+  Plus, // PlusIcon
+} from "lucide-vue-next";
+import AdminLayout from "@/Layouts/Admin/AdminLayout.vue";
+import DataTable from "@/Components/AdminComponents/DataTable.vue";
+import ActionModal from "@/Components/AdminComponents/ActionModal.vue";
+import LawyerModal from "@/Components/AdminComponents/LawyerModal.vue";
+
+const searchQuery = ref("");
+const selectedFilter = ref("all");
+const showAddModal = ref(false);
+const showBlockModal = ref(false);
+const selectedLawyer = ref(null);
+
+const props = defineProps({
+  lawyers: {
+    type: Array,
+    required: true,
+  }
+});
+
+const lawyers = ref([
+  {
+    id: 1,
+    name: "Maître Sophie Bernard",
+    email: "sophie.bernard@cabinet-bernard.fr",
+    specialty: "Droit des affaires",
+    firm: "Cabinet Bernard & Associés",
+    status: "Actif",
+    clients: 45,
+    rating: 4.8,
+    joinDate: "12/12/2023",
+  },
+  {
+    id: 2,
+    name: "Maître Paul Durand",
+    email: "paul.durand@durand-avocat.fr",
+    specialty: "Droit immobilier",
+    firm: "Durand Avocats",
+    status: "Actif",
+    clients: 32,
+    rating: 4.6,
+    joinDate: "08/11/2023",
+  },
+  {
+    id: 3,
+    name: "Maître Anne Moreau",
+    email: "anne.moreau@moreau-droit.fr",
+    specialty: "Droit de la famille",
+    firm: "Moreau & Partners",
+    status: "En attente",
+    clients: 0,
+    rating: 0,
+    joinDate: "20/01/2024",
+  },
+]);
+
+const columns = [
+  { key: "name", label: "Nom", sortable: true },
+  { key: "email", label: "Email", sortable: true },
+  { key: "specialty", label: "Spécialité", sortable: true },
+  { key: "firm_name", label: "Cabinet", sortable: true },
+  { key: "status", label: "Statut", sortable: true },
+  { key: "clients", label: "Clients", sortable: true },
+  { key: "moderation_notes", label: "Note", sortable: true },
+  { key: "actions", label: "Actions", sortable: false },
+];
+
+const filterOptions = [
+  { value: "all", label: "Tous les avocats" },
+  { value: "active", label: "Actifs" },
+  { value: "pending", label: "En attente" },
+  { value: "blocked", label: "Bloqués" },
+  { value: "business", label: "Droit des affaires" },
+  { value: "family", label: "Droit de la famille" },
+];
+
+const handleAddLawyer = () => {
+  showAddModal.value = true;
+};
+
+const handleBlockLawyer = (lawyer) => {
+  selectedLawyer.value = lawyer;
+  showBlockModal.value = true;
+};
+
+const confirmBlockLawyer = () => {
+  if (selectedLawyer.value) {
+    console.log("Blocking lawyer:", selectedLawyer.value);
+  }
+  showBlockModal.value = false;
+  selectedLawyer.value = null;
+};
+
+const handleSaveLawyer = (lawyerData) => {
+  console.log("Saving lawyer:", lawyerData);
+  showAddModal.value = false;
+};
+</script>
 
 <style scoped>
 .lawyer-management {

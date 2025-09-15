@@ -1,58 +1,3 @@
-<script setup lang="ts">
-import { ref, computed } from "vue";
-import { ChevronsUpDown, ChevronUp, ChevronDown, MoreVertical } from "lucide-vue-next";
-
-interface Column {
-  key: string;
-  label: string;
-  sortable: boolean;
-}
-
-interface Props {
-  data: any[];
-  columns: Column[];
-}
-
-const props = defineProps<Props>();
-const emit = defineEmits<{ action: [item: any] }>();
-
-const sortKey = ref("");
-const sortOrder = ref<"asc" | "desc">("asc");
-const activeDropdown = ref<number | null>(null);
-
-const sortedData = computed(() => {
-  if (!sortKey.value) return props.data;
-  return [...props.data].sort((a, b) => {
-    const aVal = a[sortKey.value];
-    const bVal = b[sortKey.value];
-    if (aVal < bVal) return sortOrder.value === "asc" ? -1 : 1;
-    if (aVal > bVal) return sortOrder.value === "asc" ? 1 : -1;
-    return 0;
-  });
-});
-
-const handleSort = (key: string) => {
-  if (sortKey.value === key) {
-    sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
-  } else {
-    sortKey.value = key;
-    sortOrder.value = "asc";
-  }
-};
-
-const toggleDropdown = (index: number) => {
-  activeDropdown.value = activeDropdown.value === index ? null : index;
-};
-
-const getStatusBadgeClass = (status: string) => {
-  const s = status.toLowerCase();
-  if (s === "actif") return "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400";
-  if (s === "bloqué" || s === "annulé") return "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400";
-  if (s === "en attente") return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-400";
-  return "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-400";
-};
-</script>
-
 <template>
   <div class="overflow-x-auto">
     <table class="min-w-full bg-white divide-y divide-gray-200 rounded-lg shadow-sm dark:divide-neutral-700 dark:bg-neutral-900">
@@ -127,6 +72,60 @@ const getStatusBadgeClass = (status: string) => {
     </table>
   </div>
 </template>
+<script setup lang="ts">
+import { ref, computed } from "vue";
+import { ChevronsUpDown, ChevronUp, ChevronDown, MoreVertical } from "lucide-vue-next";
+
+interface Column {
+  key: string;
+  label: string;
+  sortable: boolean;
+}
+
+interface Props {
+  data: any[];
+  columns: Column[];
+}
+
+const props = defineProps<Props>();
+const emit = defineEmits<{ action: [item: any] }>();
+
+const sortKey = ref("");
+const sortOrder = ref<"asc" | "desc">("asc");
+const activeDropdown = ref<number | null>(null);
+
+const sortedData = computed(() => {
+  if (!sortKey.value) return props.data;
+  return [...props.data].sort((a, b) => {
+    const aVal = a[sortKey.value];
+    const bVal = b[sortKey.value];
+    if (aVal < bVal) return sortOrder.value === "asc" ? -1 : 1;
+    if (aVal > bVal) return sortOrder.value === "asc" ? 1 : -1;
+    return 0;
+  });
+});
+
+const handleSort = (key: string) => {
+  if (sortKey.value === key) {
+    sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
+  } else {
+    sortKey.value = key;
+    sortOrder.value = "asc";
+  }
+};
+
+const toggleDropdown = (index: number) => {
+  activeDropdown.value = activeDropdown.value === index ? null : index;
+};
+
+const getStatusBadgeClass = (status: string) => {
+  const s = status.toLowerCase();
+  if (s === "actif") return "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400";
+  if (s === "bloqué" || s === "annulé") return "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400";
+  if (s === "en attente") return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-400";
+  return "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-400";
+};
+</script>
 
 <style scoped>
 /* Smooth dropdown backdrop click closure */
