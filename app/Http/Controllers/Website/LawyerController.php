@@ -5,13 +5,16 @@ namespace App\Http\Controllers\Website;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LawyerRequest;
 use App\Http\Resources\Admin\LawyerResource;
+use App\Http\Resources\Admin\UserResource;
 use App\Models\Lawyer;
+use App\Models\User;
 use Dotenv\Util\Str;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class LawyerController extends Controller
 {
+
     public function index()
     {
         $lawyers = Lawyer::with('user')->paginate(6);
@@ -23,8 +26,11 @@ class LawyerController extends Controller
     public function lawyerManagement()
     {
         $lawyers = Lawyer::with('user')->get();
+        $users = User::whereNot('role', 'admin')->get();
+
         return Inertia::render('SuperAdmin/LawyerManagement',[
              'lawyers' => LawyerResource::collection($lawyers),
+             'users' => UserResource::collection($users),
         ]);
     }
 
@@ -35,7 +41,13 @@ class LawyerController extends Controller
 
     public function create(LawyerRequest $request)
     {
+
         Lawyer::create($request->validated());
+        
+        $user = User::find($request->user_id);
+        $user->role = 'lawyer';
+        $user->save();
+        
         return back()->with('success', 'Lawyer created successfully!');
     }
 

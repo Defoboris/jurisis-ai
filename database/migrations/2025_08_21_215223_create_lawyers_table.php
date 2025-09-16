@@ -18,6 +18,10 @@ return new class extends Migration
             $table->string('bar_id')->nullable();
             $table->string('firm_name')->nullable();
             $table->string('office_address')->nullable();
+            $table->string('profile')->nullable();
+            $table->smallInteger('review')->default(3);
+            $table->smallInteger('experience')->nullable();
+
 
             // page to fields
             $table->string('slug')->unique();

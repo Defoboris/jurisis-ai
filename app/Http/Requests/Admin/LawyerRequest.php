@@ -22,15 +22,19 @@ class LawyerRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user_id'   => 'required|exists:users,id',
+            'profile'   => 'nullable|string|max:255',
             'specialty' => 'nullable|string|max:255',
             'bar_id'    => 'nullable|string|max:255',
             'firm_name' => 'nullable|string|max:255',
             'office_address' => 'nullable|string|max:255',
             'headline'  => 'nullable|string|max:255',
             'bio'       => 'nullable|string',
-            'vidio_url' => 'nullable|url',
+            'vidio_url' => 'nullable|string',
             'moderation_state' => 'in:pending,approved,rejected',
             'moderation_notes' => 'nullable|string',
+            'reiew' => 'nullable|numeric',
+            'experience' => 'nullable|numeric',
         ];
     }
 }

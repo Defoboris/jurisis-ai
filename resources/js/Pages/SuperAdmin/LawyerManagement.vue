@@ -9,7 +9,10 @@
             Gérer les profils et informations des avocats
           </p>
         </div>
-        <button class="flex items-center gap-3 px-6 py-2 text-white transition rounded-lg bg-primary hover:bg-green-700" @click="handleAddLawyer">
+        <button
+          class="flex items-center gap-3 px-6 py-2 text-white transition rounded-lg bg-primary hover:bg-green-700"
+          @click="handleAddLawyer"
+        >
           <Plus class="w-4 h-4" />
           Ajouter avocat
         </button>
@@ -41,6 +44,7 @@
         <DataTable
           :data="props.lawyers.data"
           :columns="columns"
+          @edit="handleEditLawyer"
           @action="handleBlockLawyer"
         />
       </div>
@@ -48,6 +52,9 @@
       <!-- Add lawyer modal -->
       <LawyerModal
         v-if="showAddModal"
+        :users="props.users.data"
+        :action-type="actionType"
+        :lawyer="selectedLawyer"
         title="Ajouter un nouvel avocat"
         @save="handleSaveLawyer"
         @cancel="showAddModal = false"
@@ -69,11 +76,13 @@
 
 <script setup>
 import { ref } from "vue";
-
 import {
   Search, // MagnifyingGlassIcon
   Plus, // PlusIcon
 } from "lucide-vue-next";
+import { toast } from "vue3-toastify";
+import { useForm } from "@inertiajs/vue3";
+
 import AdminLayout from "@/Layouts/Admin/AdminLayout.vue";
 import DataTable from "@/Components/AdminComponents/DataTable.vue";
 import ActionModal from "@/Components/AdminComponents/ActionModal.vue";
@@ -84,58 +93,26 @@ const selectedFilter = ref("all");
 const showAddModal = ref(false);
 const showBlockModal = ref(false);
 const selectedLawyer = ref(null);
+const actionType = ref("add");
 
 const props = defineProps({
   lawyers: {
     type: Array,
     required: true,
-  }
+  },
+  users: {
+    type: Array,
+    required: true,
+  },
 });
-
-const lawyers = ref([
-  {
-    id: 1,
-    name: "Maître Sophie Bernard",
-    email: "sophie.bernard@cabinet-bernard.fr",
-    specialty: "Droit des affaires",
-    firm: "Cabinet Bernard & Associés",
-    status: "Actif",
-    clients: 45,
-    rating: 4.8,
-    joinDate: "12/12/2023",
-  },
-  {
-    id: 2,
-    name: "Maître Paul Durand",
-    email: "paul.durand@durand-avocat.fr",
-    specialty: "Droit immobilier",
-    firm: "Durand Avocats",
-    status: "Actif",
-    clients: 32,
-    rating: 4.6,
-    joinDate: "08/11/2023",
-  },
-  {
-    id: 3,
-    name: "Maître Anne Moreau",
-    email: "anne.moreau@moreau-droit.fr",
-    specialty: "Droit de la famille",
-    firm: "Moreau & Partners",
-    status: "En attente",
-    clients: 0,
-    rating: 0,
-    joinDate: "20/01/2024",
-  },
-]);
 
 const columns = [
   { key: "name", label: "Nom", sortable: true },
   { key: "email", label: "Email", sortable: true },
   { key: "specialty", label: "Spécialité", sortable: true },
   { key: "firm_name", label: "Cabinet", sortable: true },
+  { key: "experience", label: "Experience", sortable: true },
   { key: "status", label: "Statut", sortable: true },
-  { key: "clients", label: "Clients", sortable: true },
-  { key: "moderation_notes", label: "Note", sortable: true },
   { key: "actions", label: "Actions", sortable: false },
 ];
 
@@ -157,17 +134,85 @@ const handleBlockLawyer = (lawyer) => {
   showBlockModal.value = true;
 };
 
+const handleEditLawyer = (lawyer) => {
+  actionType.value = "edit";
+  selectedLawyer.value = lawyer;
+  showAddModal.value = true;
+};
+
 const confirmBlockLawyer = () => {
   if (selectedLawyer.value) {
-    console.log("Blocking lawyer:", selectedLawyer.value);
+    const tempForm = useForm(selectedLawyer.value);
+    console.log("Blocking lawyer:", tempForm);
+    tempForm.put(route('super-admin.lawyers.moderate', { lawyer: selectedLawyer.value.id, state: 'rejected' }), {
+      onSuccess: () => {
+        toast.success("Avocat bloqué avec succès", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        showAddModal.value = false;
+      },
+      onError: () => {
+        toast.error("Erreur lors du blocage de l'avocat", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        console.log("Validation failed", tempForm.errors);
+      },
+    });
+
   }
   showBlockModal.value = false;
   selectedLawyer.value = null;
 };
 
 const handleSaveLawyer = (lawyerData) => {
-  console.log("Saving lawyer:", lawyerData);
-  showAddModal.value = false;
+  lawyerData.moderation_state =
+    lawyerData.status === "actif"
+      ? "approved"
+      : lawyerData.status === "bloqué"
+      ? "rejected"
+      : lawyerData.status === "en attente"
+      ? "pending"
+      : null;
+  // Merge emitted data into the form
+  const tempForm = useForm(lawyerData);
+
+  if (actionType.value === "edit" && lawyerData.id) {
+    tempForm.put(route("super-admin.lawyerManagement.update", lawyerData.id), {
+      onSuccess: () => {
+        toast.success("Avocat mis à jour avec succès", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        showAddModal.value = false;
+      },
+      onError: () => {
+        toast.error("Une erreur s'est produite lors de la mis à jour de l'avocat", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        console.log("Validation failed", tempForm.errors);
+      },
+    });
+  } else {
+    tempForm.post(route("super-admin.lawyerManagement.create"), {
+      onSuccess: () => {
+        toast.success("Avocat ajouté avec succès", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        showAddModal.value = false;
+      },
+      onError: () => {
+        toast.error("Une erreur s'est produite lors de l'ajout de l'avocat", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        console.log("Validation failed", tempForm.errors);
+      },
+    });
+  }
 };
 </script>
 

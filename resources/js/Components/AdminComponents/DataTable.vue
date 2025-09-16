@@ -50,7 +50,7 @@
                 >
                   <button
                     class="w-full px-4 py-2 text-sm text-left hover:bg-gray-100 dark:hover:bg-neutral-700"
-                    @click="$emit('action', item); activeDropdown = null"
+                    @click="$emit('edit', item); activeDropdown = null"
                   >
                     Modifier
                   </button>
@@ -88,7 +88,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits<{ action: [item: any] }>();
+const emit = defineEmits<{ action: [item: any], edit: [item: any] }>();
 
 const sortKey = ref("");
 const sortOrder = ref<"asc" | "desc">("asc");

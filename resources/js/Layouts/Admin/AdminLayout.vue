@@ -2,7 +2,6 @@
   <div class="flex h-screen bg-gray-50">
     <!-- Sidebar -->
     <AdminSidebar 
-      :current-page="currentPage"
       :sidebar-open="sidebarOpen"
       @page-change="handlePageChange"
       @close="sidebarOpen = false"

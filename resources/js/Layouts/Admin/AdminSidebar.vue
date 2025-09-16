@@ -5,10 +5,12 @@
   >
     <!-- Header -->
     <div class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
-      <div class="flex items-center gap-2">
-        <h2 class="text-xl font-bold text-primary">Jurisis</h2>
-        <span class="bg-primary text-white px-2 py-0.5 rounded text-xs font-semibold uppercase">Admin</span>
-      </div>
+      <Link :href="route('home')">
+        <div class="flex items-center gap-2">
+          <h2 class="text-xl font-bold text-primary">Jurisis</h2>
+          <span class="bg-primary text-white px-2 py-0.5 rounded text-xs font-semibold uppercase">Admin</span>
+        </div>
+      </Link>
       <button
         class="p-2 text-gray-500 rounded lg:hidden hover:bg-gray-100"
         @click="$emit('close')"
@@ -50,10 +52,8 @@
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/vue3'
+import { Link, usePage } from '@inertiajs/vue3'
 import { X, Home, Users, UserRound, CreditCard, MessageSquare } from 'lucide-vue-next'
-
-import { usePage } from '@inertiajs/vue3'
 
 const props = defineProps({
   sidebarOpen: Boolean
