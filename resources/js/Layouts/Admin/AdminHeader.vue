@@ -11,13 +11,12 @@ defineEmits<{
   <header class="z-10 flex items-center h-16 px-4 bg-white border-b border-gray-200 lg:px-6">
     <div class="flex items-center w-full gap-4">
       <!-- Mobile menu button -->
-      <Link
-        href="/"
+      <button
         class="p-2 text-gray-600 rounded hover:bg-gray-100 lg:hidden"
         @click="$emit('toggleSidebar')"
       >
         <Menu class="w-6 h-6" />
-      </Link>
+      </button>
 
       <!-- Right side actions -->
       <div class="flex items-center justify-end w-full gap-4">

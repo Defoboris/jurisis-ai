@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\Admin\SubscriptionPlanController;
 use App\Http\Controllers\Admin\SuperAdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Website\LawyerController;
@@ -24,4 +25,10 @@ Route::middleware(['auth', 'admin'])->prefix('super-admin')->group(function () {
     Route::put('/lawyer-management/{lawyer}/moderate/{state}', [LawyerController::class, 'moderate'])->name('super-admin.lawyers.moderate');
 
     Route::get('/subscription-management', [PlanController::class, 'index'])->name('super-admin.subscriptionManagement');
+
+    Route::get('/subscription-plans/management', [SubscriptionPlanController::class, 'index'])->name('super-admin.subscriptions');
+    Route::post('/subscription-plans/management', [SubscriptionPlanController::class, 'update'])->name('super-admin.subscriptions.update');
+
+
+
 });

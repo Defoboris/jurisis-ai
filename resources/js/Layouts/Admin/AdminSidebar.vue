@@ -53,7 +53,7 @@
 
 <script setup>
 import { Link, usePage } from '@inertiajs/vue3'
-import { X, Home, Users, UserRound, CreditCard, MessageSquare } from 'lucide-vue-next'
+import { X, Home, Users, UserRound, CreditCard, MessageSquare, Settings2Icon } from 'lucide-vue-next'
 
 const props = defineProps({
   sidebarOpen: Boolean
@@ -67,6 +67,7 @@ const menuItems = [
   { id: 'super-admin.user-management', label: 'Utilisateurs', page: 'SuperAdmin/UserManagement', icon: Users },
   { id: 'super-admin.lawyerManagement', label: 'Avocats', page: 'SuperAdmin/LawyerManagement', icon: UserRound },
   { id: 'super-admin.subscriptionManagement', label: 'Abonnements', page: 'SuperAdmin/SubscriptionManagement', icon: CreditCard },
-  { id: 'super-admin.chatbot-management', label: 'Chatbot', page: 'SuperAdmin/ChatbotManagement', icon: MessageSquare }
+  { id: 'super-admin.subscriptions', label: 'Abonnements et tarifs', page: 'SuperAdmin/SubscriptionPlan', icon: Settings2Icon },
+  { id: 'super-admin.chatbot-management', label: 'Chatbot', page: 'SuperAdmin/ChatbotManagement', icon: MessageSquare },
 ]
 </script>

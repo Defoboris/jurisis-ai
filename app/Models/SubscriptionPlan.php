@@ -16,7 +16,12 @@ class SubscriptionPlan extends Model
         'currency',
         'interval',
         'features',
-        'is_active',
+        'description',
+        'is_active',   
+        'badge',
+        'buttonText',
+        'buttonVariant'
+
     ];
 
     protected $casts = [
