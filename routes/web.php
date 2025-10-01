@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\SubscriptionController;
+use App\Http\Controllers\Member\MessageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Website\AboutController;
 use App\Http\Controllers\Website\ArticleController;
@@ -34,14 +35,21 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/lawyers', [LawyerController::class, 'index'])->name('lawyers');
-Route::get('/lawyers/details', [LawyerController::class, 'show'])->name('lawyer.show');
+Route::get('/lawyers/details/{lawyer}', [LawyerController::class, 'show'])->name('lawyer.show');
 
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles');
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');
-Route::get('/chat/stream', [ChatController::class, 'stream'])->name('chat.stream'); 
-
+Route::get('/chat/stream', [ChatController::class, 'stream'])->name('chat.stream');
+ 
 Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations');
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/conversations/start/{lawyer}', [ConversationController::class, 'store'])->name('conversations.store');
+
+    Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
+    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');
+});
 
 Route::get('/subscriptions-plans', [SubscriptionController::class, 'index'])->name('subscriptions-plans');
 

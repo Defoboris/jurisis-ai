@@ -35,7 +35,19 @@ class MessageController extends Controller
             'content'   => $request->validated()['content'],
         ]);
 
-        return back()->with('success', 'Message sent');
+        // Format the message for frontend
+        $formattedMessage = [
+            'id'        => $message->id,
+            'content'   => $message->content,
+            'sender'    => $request->user()->role === 'lawyer' ? 'lawyer' : 'user',
+            'timestamp' => $message->created_at,
+            'senderName' => $request->user()->name,
+        ];
+
+        // Return JSON for Inertia's onSuccess
+        return response()->json([
+            'message' => $formattedMessage,
+        ]);
     }
 
     /**

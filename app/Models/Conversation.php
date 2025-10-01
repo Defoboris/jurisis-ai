@@ -23,7 +23,7 @@ class Conversation extends Model
 
     public function lawyer(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'lawyer_id');
+        return $this->belongsTo(Lawyer::class, 'lawyer_id');
     }
 
     public function messages(): HasMany

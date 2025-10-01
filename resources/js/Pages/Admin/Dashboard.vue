@@ -194,11 +194,11 @@
                         </span>
                         <span class="flex items-center gap-1">
                           <MessageCircle class="w-3 h-3" />
-                          {{ article.comments }} commentaires
+                          {{ article.comments }} Messages
                         </span>
                         <span class="flex items-center gap-1">
                           <Star class="w-3 h-3" />
-                          {{ article.likes }} j'aime
+                          {{ article.likes }} commentaires
                         </span>
                       </template>
                     </div>
@@ -274,6 +274,195 @@
           </div>
         </div>
 
+        <!-- Messages Tab -->
+
+        <div v-if="activeTab === 'messages'" class="space-y-6">
+         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
+          <!-- Conversations List -->
+          <div
+            class="flex flex-col bg-white border rounded-lg shadow lg:col-span-1"
+          >
+            <div class="p-4 border-b">
+              <h3 class="font-semibold">Mes Conversations</h3>
+            </div>
+
+            <div class="flex-1 overflow-y-auto">
+              <div
+                v-for="conv in conversations"
+                :key="conv.id"
+                @click="selectedConversation = conv.id"
+                class="p-4 transition-colors border-b cursor-pointer hover:bg-slate-50"
+                :class="selectedConversation === conv.id ? 'bg-slate-100' : ''"
+              >
+                <div class="flex items-start gap-3">
+                  <div class="relative">
+                    <img
+                      :src="conv.lawyerAvatar"
+                      :alt="conv.lawyerName"
+                      class="object-cover w-10 h-10 rounded-full"
+                    />
+                    <div
+                      class="absolute w-3 h-3 border-2 border-white rounded-full -bottom-1 -right-1"
+                      :class="getStatusColor(conv.status)"
+                    />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between">
+                      <h4 class="text-sm font-medium truncate">
+                        {{ conv.lawyerName }}
+                      </h4>
+                      <span
+                        v-if="conv.unreadCount > 0"
+                        class="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full"
+                        >{{ conv.unreadCount }}</span
+                      >
+                    </div>
+                    <p class="mb-1 text-xs text-muted-foreground">
+                      {{ conv.lawyerSpecialty }}
+                    </p>
+                    <p class="text-xs truncate text-muted-foreground">
+                      {{ conv.lastMessage }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat Area -->
+          <div class="lg:col-span-2">
+            <div
+              v-if="selectedConversation"
+              class="flex flex-col h-full bg-white border rounded-lg shadow"
+            >
+              <!-- Chat Header -->
+              <div class="flex items-center gap-3 p-4 border-b">
+                <template
+                  v-if="
+                    conversations.find((c) => c.id === selectedConversation)
+                  "
+                >
+                  <img
+                    :src="
+                      conversations.find((c) => c.id === selectedConversation)
+                        .lawyerAvatar
+                    "
+                    class="w-10 h-10 rounded-full"
+                  />
+                  <div>
+                    <h3 class="font-semibold">
+                      {{
+                        conversations.find((c) => c.id === selectedConversation)
+                          .lawyerName
+                      }}
+                    </h3>
+                    <p class="text-sm text-muted-foreground">
+                      {{
+                        conversations.find((c) => c.id === selectedConversation)
+                          .lawyerSpecialty
+                      }}
+                      •
+                      {{
+                        getStatusText(
+                          conversations.find(
+                            (c) => c.id === selectedConversation
+                          ).status
+                        )
+                      }}
+                    </p>
+                  </div>
+                </template>
+              </div>
+
+              <!-- Messages -->
+              <div class="flex-1 p-4 space-y-4 overflow-y-auto">
+                <div
+                  v-for="message in conversationMessages[selectedConversation]"
+                  :key="message.id"
+                  class="flex gap-3"
+                  :class="
+                    message.sender === 'user' ? 'justify-end' : 'justify-start'
+                  "
+                >
+                  <template v-if="message.sender === 'lawyer'">
+                    <img
+                      :src="
+                        conversations.find((c) => c.id === selectedConversation)
+                          ?.lawyerAvatar
+                      "
+                      class="w-8 h-8 rounded-full"
+                    />
+                  </template>
+
+                  <div
+                    class="max-w-[70%] rounded-lg px-4 py-2"
+                    :class="
+                      message.sender === 'user'
+                        ? 'bg-primary text-white'
+                        : 'bg-slate-100'
+                    "
+                  >
+                    <p class="text-sm">{{ message.content }}</p>
+                    <span class="block mt-1 text-xs opacity-70">{{
+                      message.timestamp.toLocaleTimeString("fr-FR", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    }}</span>
+                  </div>
+
+                  <template v-if="message.sender === 'user'">
+                    <div
+                      class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-200"
+                    >
+                      <User class="w-4 h-4" />
+                    </div>
+                  </template>
+                </div>
+                <div ref="messagesEndRef"></div>
+              </div>
+
+              <!-- Input -->
+              <div class="p-4 border-t">
+                <div class="flex gap-2">
+                  <input
+                    v-model="inputValue"
+                    @keypress="handleKeyPress"
+                    placeholder="Tapez votre message..."
+                    class="flex-1 px-3 py-2 border rounded-md"
+                  />
+                  <button
+                    @click="handleSendMessage"
+                    :disabled="!inputValue.trim()"
+                    class="flex items-center justify-center w-10 h-10 text-white rounded-md bg-primary hover:bg-primary/90 disabled:opacity-50"
+                  >
+                    <Send class="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div
+              v-else
+              class="flex items-center justify-center h-full bg-white border rounded-lg shadow"
+            >
+              <div class="text-center">
+                <MessageCircle
+                  class="w-12 h-12 mx-auto mb-4 text-muted-foreground"
+                />
+                <h3 class="mb-2 font-semibold">
+                  Sélectionnez une conversation
+                </h3>
+                <p class="text-muted-foreground">
+                  Choisissez une conversation existante ou contactez un avocat
+                  disponible
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+
         <!-- Settings Tab -->
         <div v-if="activeTab === 'settings'" class="space-y-6">
           <div>
@@ -320,7 +509,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, reactive, nextTick } from 'vue'
+import { marked } from "marked";
+
 import {
   BarChart3,
   BookOpen,
@@ -334,10 +525,14 @@ import {
   Star,
   Plus,
   Edit,
-  Bot
+  Bot,
+  Send, User, Sparkles
 } from 'lucide-vue-next'
 
 const activeTab = ref('overview')
+const inputValue = ref("");
+const isTyping = ref(false);
+const selectedConversation = ref(null);
 
 const currentLawyer = ref({
   id: "marie-dubois",
@@ -387,9 +582,76 @@ const currentLawyer = ref({
 const tabs = [
   { value: 'overview', label: 'Vue d\'ensemble', icon: BarChart3 },
   { value: 'articles', label: 'Articles', icon: BookOpen },
-  { value: 'profile', label: 'Profil', icon: Users },
+  // { value: 'profile', label: 'Profil', icon: Users },
+  { value: 'messages', label: 'Messages', icon: MessageCircle },
   { value: 'settings', label: 'Paramètres', icon: Settings },
 ]
+const conversationMessages = reactive({
+  1: [
+    {
+      id: "1",
+      content: "Bonjour, j'ai besoin d'aide pour mon divorce.",
+      sender: "user",
+      timestamp: new Date(Date.now() - 60 * 60 * 1000),
+    },
+    {
+      id: "2",
+      content:
+        "Bonjour ! Je serais ravie de vous aider. Pouvez-vous me donner plus de détails sur votre situation ?",
+      sender: "lawyer",
+      senderName: "Marie Dubois",
+      timestamp: new Date(Date.now() - 45 * 60 * 1000),
+    },
+  ],
+  2: [
+    {
+      id: "1",
+      content: "J'ai des questions sur l'achat de ma maison.",
+      sender: "user",
+      timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
+    },
+    {
+      id: "2",
+      content:
+        "Les documents que vous avez envoyés sont en ordre. Je vais les examiner.",
+      sender: "lawyer",
+      senderName: "Jean Martin",
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    },
+  ],
+});
+
+
+const availableLawyers = ref([
+  {
+    id: "marie-dubois",
+    name: "Marie Dubois",
+    avatar: "/professional-female-lawyer.png",
+    specialty: "Droit de la famille",
+    rating: 4.9,
+    status: "online",
+    responseTime: "< 30 min",
+  },
+  {
+    id: "jean-martin",
+    name: "Jean Martin",
+    avatar: "/professional-male-lawyer-real-estate.png",
+    specialty: "Droit immobilier",
+    rating: 4.8,
+    status: "busy",
+    responseTime: "< 2h",
+  },
+  {
+    id: "sophie-bernard",
+    name: "Sophie Bernard",
+    avatar: "/female-lawyer-employment.png",
+    specialty: "Droit du travail",
+    rating: 4.7,
+    status: "online",
+    responseTime: "< 1h",
+  },
+]);
+
 
 const statsCards = computed(() => [
   {
@@ -405,7 +667,7 @@ const statsCards = computed(() => [
     icon: Eye
   },
   {
-    title: 'Commentaires',
+    title: 'Messages',
     value: currentLawyer.value.stats.totalComments,
     change: '+12 cette semaine',
     icon: MessageCircle
@@ -436,6 +698,134 @@ const securityOptions = [
   'Authentification à deux facteurs',
   'Sessions actives'
 ]
+
+const conversations = ref([
+  {
+    id: "1",
+    lawyerId: "marie-dubois",
+    lawyerName: "Marie Dubois",
+    lawyerAvatar: "/professional-female-lawyer.png",
+    lawyerSpecialty: "Droit de la famille",
+    lastMessage:
+      "Je peux vous aider avec votre dossier de divorce. Quand pouvons-nous programmer un rendez-vous ?",
+    lastMessageTime: new Date(Date.now() - 30 * 60 * 1000),
+    unreadCount: 2,
+    status: "online",
+  },
+  {
+    id: "2",
+    lawyerId: "jean-martin",
+    lawyerName: "Jean Martin",
+    lawyerAvatar: "/professional-male-lawyer-real-estate.png",
+    lawyerSpecialty: "Droit immobilier",
+    lastMessage:
+      "Les documents que vous avez envoyés sont en ordre. Je vais les examiner.",
+    lastMessageTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    unreadCount: 0,
+    status: "busy",
+  },
+]);
+
+const messagesEndRef = ref(null);
+
+const scrollToBottom = () => {
+  nextTick(() => {
+    messagesEndRef.value?.scrollIntoView({ behavior: "smooth" });
+  });
+};
+
+watch([conversationMessages, selectedConversation], scrollToBottom, {
+  deep: true,
+});
+
+const handleSendMessage = () => {
+  if (!inputValue.value.trim() || !selectedConversation.value) return;
+
+  const userMessage = {
+    id: Date.now().toString(),
+    content: inputValue.value,
+    sender: "user",
+    timestamp: new Date(),
+  };
+
+  if (!conversationMessages[selectedConversation.value]) {
+    conversationMessages[selectedConversation.value] = [];
+  }
+
+  conversationMessages[selectedConversation.value].push(userMessage);
+
+  // update conversation list
+  conversations.value = conversations.value.map((conv) =>
+    conv.id === selectedConversation.value
+      ? {
+          ...conv,
+          lastMessage: inputValue.value,
+          lastMessageTime: new Date(),
+        }
+      : conv
+  );
+
+  inputValue.value = "";
+};
+
+const handleKeyPress = (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    handleSendMessage();
+  }
+};
+
+const startConversationWithLawyer = (lawyer) => {
+  const newConv = {
+    id: Date.now().toString(),
+    lawyerId: lawyer.id,
+    lawyerName: lawyer.name,
+    lawyerAvatar: lawyer.avatar,
+    lawyerSpecialty: lawyer.specialty,
+    lastMessage: "Conversation démarrée",
+    lastMessageTime: new Date(),
+    unreadCount: 0,
+    status: lawyer.status,
+  };
+
+  conversations.value.unshift(newConv);
+
+  conversationMessages[newConv.id] = [
+    {
+      id: "1",
+      content: `Bonjour ! Je suis ${lawyer.name}, spécialisé en ${lawyer.specialty}. Comment puis-je vous aider ?`,
+      sender: "lawyer",
+      senderName: lawyer.name,
+      timestamp: new Date(),
+    },
+  ];
+
+  selectedConversation.value = newConv.id;
+};
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case "online":
+      return "bg-green-500";
+    case "busy":
+      return "bg-yellow-500";
+    default:
+      return "bg-gray-400";
+  }
+};
+
+const getStatusText = (status) => {
+  switch (status) {
+    case "online":
+      return "En ligne";
+    case "busy":
+      return "Occupé";
+    default:
+      return "Hors ligne";
+  }
+};
+
+
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('fr-FR')

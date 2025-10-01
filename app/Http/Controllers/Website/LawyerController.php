@@ -34,9 +34,13 @@ class LawyerController extends Controller
         ]);
     }
 
-    public function show()
+    public function show(Lawyer $lawyer)
     {
-        return Inertia::render('Web/Lawyer/LawyerDetails');
+        $lawyer->load('user');
+        
+        return Inertia::render('Web/Lawyer/LawyerDetails', [
+            'lawyer' => $lawyer
+        ]);
     }
 
     public function create(LawyerRequest $request)

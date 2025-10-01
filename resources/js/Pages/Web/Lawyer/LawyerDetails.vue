@@ -13,7 +13,6 @@
           </Link>
         </div>
       </div>
-
       <!-- Lawyer Profile Header -->
       <section class="py-12 bg-gradient-to-br from-primary/5 to-secondary/5">
         <div class="container px-4 mx-auto">
@@ -23,13 +22,13 @@
                 class="flex items-center justify-center w-32 h-32 mx-auto overflow-hidden rounded-full md:mx-0 bg-primary/10"
               >
                 <img
-                  v-if="lawyer.avatar"
-                  :src="lawyer.avatar"
-                  :alt="lawyer.name"
+                  v-if="props.lawyer.profile"
+                  :src="props.lawyer.profile"
+                  :alt="props.lawyer.user.name"
                   class="object-cover w-full h-full"
                 />
                 <span v-else class="text-2xl font-semibold text-primary">
-                  {{ getInitials(lawyer.name) }}
+                  {{ getInitials(props.lawyer.user.name) }}
                 </span>
               </div>
 
@@ -37,10 +36,10 @@
                 <h1
                   class="mb-2 text-3xl font-bold font-heading md:text-4xl text-foreground"
                 >
-                  {{ lawyer.name }}
+                  {{ props.lawyer.user.name }}
                 </h1>
                 <p class="mb-4 text-lg font-medium text-primary">
-                  {{ lawyer.title }}
+                  {{ props.lawyer.specialty }}
                 </p>
 
                 <div
@@ -48,15 +47,15 @@
                 >
                   <div class="flex items-center gap-1">
                     <MapPin class="w-4 h-4" />
-                    {{ lawyer.location }}
+                    {{ props.lawyer.office_address }}
                   </div>
                   <div class="flex items-center gap-1">
                     <Star class="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                    {{ lawyer.rating }} / 5
+                    {{ props.lawyer.review }} / 5
                   </div>
                   <div class="flex items-center gap-1">
                     <Calendar class="w-4 h-4" />
-                    {{ lawyer.experience }} d'expérience
+                    {{ props.lawyer.experience }} d'expérience
                   </div>
                 </div>
 
@@ -73,7 +72,7 @@
                 </div>
 
                 <p class="max-w-2xl leading-relaxed text-muted-foreground">
-                  {{ lawyer.bio }}
+                  {{ props.lawyer.bio }}
                 </p>
               </div>
             </div>
@@ -142,11 +141,12 @@
                     >
                       Contact
                     </h4>
-                    <button
+                    <Link
+                      :href="route('conversations')"
                       class="inline-flex items-center justify-center w-full h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90"
                     >
-                      Prendre rendez-vous
-                    </button>
+                      Envoyer un message
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -266,7 +266,12 @@ import {
   Share2,
 } from "lucide-vue-next";
 
-
+const props = defineProps({
+  lawyer: {
+    type: Object,
+    required: true,
+  },
+});
 
 // Sample lawyer data
 const lawyersData = ref({

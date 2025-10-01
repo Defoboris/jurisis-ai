@@ -20,7 +20,7 @@
       <div class="container px-4 mx-auto">
         <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           <div
-            v-for="lawyer in lawyers"
+            v-for="lawyer in props.lawyers.data"
             :key="lawyer.id"
             class="transition-all duration-300 border rounded-lg shadow-sm bg-card text-card-foreground group hover:shadow-lg border-border/50 hover:border-primary/20"
           >
@@ -28,22 +28,22 @@
               <div class="flex items-start gap-4">
                 <div class="relative flex w-16 h-16 overflow-hidden rounded-full shrink-0">
                   <img
-                    :src="lawyer.avatar || '/placeholder.svg'"
+                    :src="lawyer.profile || '/placeholder.svg'"
                     :alt="lawyer.name"
                     class="w-full h-full aspect-square"
                   />
                 </div>
                 <div class="flex-1">
-                  <h3 class="mb-1 text-xl font-heading">{{ lawyer.name }}</h3>
-                  <p class="mb-2 text-sm font-medium text-primary">{{ lawyer.title }}</p>
+                  <h3 class="mb-1 text-xl font-heading">{{ lawyer.user.name }}</h3>
+                  <p class="mb-2 text-sm font-medium text-primary">{{ lawyer.specialty }}</p>
                   <div class="flex items-center gap-4 text-sm text-muted-foreground">
                     <div class="flex items-center gap-1">
                       <MapPin class="w-3 h-3" />
-                      {{ lawyer.location }}
+                      {{ lawyer.office_address }}
                     </div>
                     <div class="flex items-center gap-1">
                       <Star class="w-3 h-3 text-yellow-400 fill-yellow-400" />
-                      {{ lawyer.rating }}
+                      {{ lawyer.review }}
                     </div>
                   </div>
                 </div>
@@ -51,11 +51,11 @@
             </div>
 
             <div class="p-6 pt-0 space-y-4">
-              <p class="text-sm leading-relaxed text-muted-foreground">{{ lawyer.description }}</p>
+              <p class="text-sm leading-relaxed text-muted-foreground">{{ lawyer.moderation_notes }}</p>
 
               <div class="flex flex-wrap gap-2">
                 <span
-                  v-for="specialty in lawyer.specialties"
+                  v-for="specialty in specialties"
                   :key="specialty"
                   class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80"
                 >
@@ -70,12 +70,12 @@
                 </div>
                 <div class="flex items-center gap-1">
                   <BookOpen class="w-3 h-3" />
-                  {{ lawyer.articles }} articles
+                  5 articles
                 </div>
               </div>
 
               <div class="pt-2">
-                <p class="mb-3 text-xs text-muted-foreground">Dernier article: "{{ lawyer.recentArticle }}"</p>
+                <p class="mb-3 text-xs text-muted-foreground">Dernier article: ""</p>
                 <Link :href="route('lawyer.show', lawyer.id)">
                   <button class="inline-flex items-center justify-center w-full h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 group-hover:bg-primary/90">
                     Voir le profil et les articles
@@ -98,6 +98,17 @@ import { ref } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { MapPin, Star, BookOpen, Calendar } from 'lucide-vue-next'
 import WebLayout from '@/Layouts/WebLayout.vue'
+
+const props = defineProps({
+  lawyers: {
+    type: Array,
+    required: true
+  }
+});
+
+const specialties = ref([
+  "Droit Pénal", "Droit de la Défense", "Procédure Pénale"
+]);
 
 
 const lawyers = ref([
