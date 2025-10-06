@@ -199,6 +199,7 @@ import { ref, reactive, nextTick } from "vue";
 import { Send, User, MessageCircle, Users } from "lucide-vue-next";
 import { Link, router, useForm, usePage } from "@inertiajs/vue3";
 import { toast } from "vue3-toastify";
+import axios from "axios";
 
 import Header from "@/Components/WebComponents/Header.vue";
 
@@ -244,8 +245,6 @@ const loadMessages = async (conversationId) => {
 };
 
 // Send a new message
-import axios from "axios";
-
 const handleSendMessage = async () => {
   if (!inputValue.value.trim() || !selectedConversation.value) return;
 

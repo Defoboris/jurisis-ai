@@ -48,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/conversations/start/{lawyer}', [ConversationController::class, 'store'])->name('conversations.store');
 
     Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
+    Route::get('/conversations/{conversation}/lawyer', [ConversationController::class, 'showLawyer'])->name('conversations.show.lawyer');
     Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');
 });
 

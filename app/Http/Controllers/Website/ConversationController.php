@@ -90,6 +90,31 @@ class ConversationController extends Controller
         ]);
     }
 
+    public function showLawyer(Request $request, Conversation $conversation)
+    {
+        $messages = $conversation->messages()
+            ->with('sender')
+            ->orderBy('created_at')
+            ->get()
+            ->map(fn($m) => [
+                'id' => $m->id,
+                'content' => $m->content,
+                'sender' => $m->sender->role === 'lawyer' ? 'lawyer' : 'user',
+                'timestamp' => $m->created_at,
+                'senderName' => $m->sender->name,
+            ]);
+
+            
+            if ($request->wantsJson()) {
+            return response()->json($messages);
+        }
+
+        // For normal Inertia page load fallback
+        return Inertia::render('Web/Conversations/Conversation', [
+            'messages' => $messages,
+        ]);
+    }
+
     public function store(Request $request, Lawyer $lawyer)
     {
         if (!Auth::check()) {
