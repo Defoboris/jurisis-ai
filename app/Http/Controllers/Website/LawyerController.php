@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LawyerRequest;
 use App\Http\Resources\Admin\LawyerResource;
 use App\Http\Resources\Admin\UserResource;
+use App\Models\Article;
 use App\Models\Lawyer;
 use App\Models\User;
 use Dotenv\Util\Str;
@@ -38,6 +39,7 @@ class LawyerController extends Controller
     {
         $lawyer->load('user');
         
+        $lawyer->articles = Article::published()->latest('published_at')->get(['id', 'title', 'content', 'slug', 'published_at', 'views', 'likes', 'comments_count']);
         return Inertia::render('Web/Lawyer/LawyerDetails', [
             'lawyer' => $lawyer
         ]);

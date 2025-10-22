@@ -160,13 +160,13 @@
                 </h2>
                 <p class="text-muted-foreground">
                   Découvrez les analyses et conseils juridiques de
-                  {{ lawyer.name.split(" ")[0] }}
+                  {{ props.lawyer.user.name }}
                 </p>
               </div>
 
               <div class="space-y-6">
                 <div
-                  v-for="article in lawyer.articles"
+                  v-for="article in props.lawyer.articles"
                   :key="article.id"
                   class="transition-all duration-300 border rounded-lg shadow-sm group bg-card text-card-foreground hover:shadow-md"
                 >
@@ -178,11 +178,6 @@
                         >
                           {{ article.title }}
                         </h3>
-                        <p
-                          class="text-sm text-base leading-relaxed text-muted-foreground"
-                        >
-                          {{ article.excerpt }}
-                        </p>
                       </div>
                     </div>
                   </div>
@@ -231,7 +226,7 @@
 
                     <div class="pt-4 mt-4 border-t border-border/50">
                       <Link
-                        :href="route('articles')"
+                        :href="route('articles.show', article.slug)"
                         class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors bg-transparent border rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border-input hover:bg-primary hover:text-primary-foreground group-hover:bg-primary group-hover:text-primary-foreground"
                       >
                         Lire l'article complet

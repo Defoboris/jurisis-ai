@@ -10,8 +10,8 @@
             Avocats
           </Link>
           <span>/</span>
-          <Link :href="`/avocats/${lawyer.id}`" class="transition-colors hover:text-primary">
-            {{ lawyer.name }}
+          <Link :href="route('lawyer.show', curentLaywer.id)" class="transition-colors hover:text-primary">
+            {{ props.lawyer.name }}
           </Link>
           <span>/</span>
           <span class="text-foreground">Article</span>
@@ -24,11 +24,11 @@
       <div class="container px-4 mx-auto">
         <div class="max-w-4xl mx-auto">
           <Link
-            :href="`/avocats/${lawyer.id}`"
+            :href="route('lawyer.show', curentLaywer.id)"
             class="inline-flex items-center gap-2 mb-6 text-sm transition-colors text-muted-foreground hover:text-primary"
           >
             <ArrowLeft class="w-4 h-4" />
-            Retour au profil de {{ lawyer.name }}
+            Retour au profil de  {{ props.lawyer.name }}
           </Link>
 
           <div class="flex flex-wrap gap-2 mb-4">
@@ -42,25 +42,25 @@
           </div>
 
           <h1 class="mb-6 text-3xl font-bold font-heading md:text-4xl text-foreground">
-            {{ article.title }}
+            {{ props.article.title }}
           </h1>
 
           <div class="flex items-center gap-6 mb-6 text-sm text-muted-foreground">
             <div class="flex items-center gap-1">
               <Calendar class="w-4 h-4" />
-              {{ formatDate(article.publishedAt) }}
+              {{ formatDate(props.article.publishedAt) }}
             </div>
             <div class="flex items-center gap-1">
               <Clock class="w-4 h-4" />
-              {{ article.readTime }}
+              {{ props.article.readTime }}
             </div>
             <div class="flex items-center gap-1">
               <Eye class="w-4 h-4" />
-              {{ article.views }} vues
+              {{ props.article.views }} vues
             </div>
             <div class="flex items-center gap-1">
               <MessageCircle class="w-4 h-4" />
-              {{ article.comments }} commentaires
+              {{ props.article.comments }} commentaires
             </div>
           </div>
 
@@ -68,14 +68,14 @@
           <div class="flex items-center gap-4 p-4 border rounded-lg bg-card border-border/50">
             <div class="relative flex w-12 h-12 overflow-hidden rounded-full shrink-0">
               <img
-                :src="lawyer.avatar || '/placeholder.svg'"
-                :alt="lawyer.name"
+                :src="curentLaywer.profile || '/placeholder.svg'"
+                :alt="curentLaywer.name"
                 class="w-full h-full aspect-square"
               />
             </div>
             <div>
-              <p class="font-semibold">{{ lawyer.name }}</p>
-              <p class="text-sm text-muted-foreground">{{ lawyer.title }}</p>
+              <p class="font-semibold">{{ props.lawyer.name }}</p>
+              <p class="text-sm text-muted-foreground">{{ props.curentLaywer.specialty }}</p>
             </div>
           </div>
         </div>
@@ -99,7 +99,7 @@
                     class="inline-flex items-center justify-start w-full px-3 text-sm font-medium transition-colors bg-transparent border rounded-md whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border-input hover:bg-accent hover:text-accent-foreground h-9"
                   >
                     <ThumbsUp class="w-4 h-4 mr-2" />
-                    J'aime ({{ article.likes }})
+                    J'aime ({{ props.article.likes }})
                   </button>
                   <button
                     @click="toggleBookmark"
@@ -147,11 +147,9 @@
             <div class="border rounded-lg shadow-sm bg-card text-card-foreground">
               <div class="p-8">
                 <div class="prose prose-lg max-w-none">
-                  <div class="mb-8 text-lg font-medium leading-relaxed text-muted-foreground">
-                    {{ article.excerpt }}
-                  </div>
+                 
                   <div class="shrink-0 bg-border h-[1px] w-full my-8"></div>
-                  <div class="article-content" v-html="formattedContent"></div>
+                  <div class="article-content" v-html="props.article.content"></div>
                 </div>
               </div>
             </div>
@@ -203,6 +201,20 @@ import {
   Mail,
 } from 'lucide-vue-next'
 
+const props = defineProps({
+  article: {
+    type: Object,
+    required: true,
+  },
+  lawyer: {
+    type: Object,
+    required: true,
+  },
+  curentLaywer: {
+    type: Object,
+    required: true
+  }
+})
 // Extended lawyer data with full article content
 const lawyersData = {
   "marie-dubois": {

@@ -120,7 +120,7 @@
                 <p class="text-sm text-muted-foreground">Vos dernières publications et brouillons</p>
               </div>
               <div class="p-6 pt-0 space-y-4">
-                <div v-for="article in currentLawyer.recentArticles" :key="article.id"
+                <div v-for="article in authLawyer.recentArticles" :key="article.id"
                   class="flex items-center justify-between p-3 border rounded-lg border-border/50">
                   <div class="flex-1">
                     <h4 class="mb-1 text-sm font-medium">{{ article.title }}</h4>
@@ -146,16 +146,16 @@
                     </div>
                   </div>
                   <button
+                    @click="openEditModal(article)"
                     class="inline-flex items-center justify-center text-sm font-medium transition-colors rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9">
                     <Edit class="w-4 h-4" />
                   </button>
                 </div>
-                <a href="/admin/articles">
-                  <button
+                
+                  <button @click="activeTab = 'articles'"
                     class="inline-flex items-center justify-center w-full h-10 px-4 py-2 text-sm font-medium transition-colors bg-transparent border rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border-input hover:bg-accent hover:text-accent-foreground">
                     Voir tous les articles
                   </button>
-                </a>
               </div>
             </div>
 
@@ -173,11 +173,11 @@
                     <span :class="['font-semibold', metric.highlight ? 'text-primary' : '']">{{ metric.value }}</span>
                   </div>
                 </div>
-                <button
+                <!-- <button
                   class="inline-flex items-center justify-center w-full h-10 px-4 py-2 text-sm font-medium transition-colors bg-transparent border rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border-input hover:bg-accent hover:text-accent-foreground">
                   <TrendingUp class="w-4 h-4 mr-2" />
                   Voir les analytics détaillées
-                </button>
+                </button> -->
               </div>
             </div>
           </div>
@@ -190,19 +190,18 @@
               <h2 class="text-2xl font-bold font-heading">Gestion des articles</h2>
               <p class="text-muted-foreground">Créez et gérez vos articles d'expertise juridique</p>
             </div>
-            <a href="/admin/articles/new">
-              <button
-                class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90">
-                <Plus class="w-4 h-4 mr-2" />
-                Nouvel article
-              </button>
-            </a>
+
+            <button @click="openNewArticleModal()"
+              class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90">
+              <Plus class="w-4 h-4 mr-2" />
+              Nouvel article
+            </button>
           </div>
 
           <div class="border rounded-lg shadow-sm bg-card text-card-foreground">
             <div class="p-6">
               <div class="space-y-4">
-                <div v-for="article in currentLawyer.recentArticles" :key="article.id"
+                <div v-for="article in authLawyer.recentArticles" :key="article.id"
                   class="flex items-center justify-between p-4 transition-colors border rounded-lg border-border/50 hover:bg-muted/50">
                   <div class="flex-1">
                     <div class="flex items-center gap-3 mb-2">
@@ -238,7 +237,7 @@
                     </div>
                   </div>
                   <div class="flex items-center gap-2">
-                    <button
+                    <button @click="openEditModal(article)"
                       class="inline-flex items-center justify-center text-sm font-medium transition-colors rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9">
                       <Edit class="w-4 h-4" />
                     </button>
@@ -484,6 +483,7 @@
       </div>
     </div>
   </div>
+  <ArticleModal :is-open="showModal" :article="selectedArticle" @close="showModal = false" @save="handleSave" />
 </template>
 
 <script setup>
@@ -511,6 +511,7 @@ import { toast } from "vue3-toastify";
 
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
+import ArticleModal from '@/Components/AdminComponents/ArticleModal.vue';
 
 const activeTab = ref('overview')
 const isTyping = ref(false);
@@ -525,6 +526,8 @@ const selectedConversation = ref(null);
 const conversationMessages = reactive({});
 const messagesEndRef = ref(null);
 const inputValue = ref("");
+const showModal = ref(false);
+const selectedArticle = ref(null);
 
 const page = usePage();
 
@@ -584,7 +587,7 @@ const tabs = [
 const statsCards = computed(() => [
   {
     title: 'Articles publiés',
-    value: currentLawyer.value.stats.totalArticles,
+    value: props.authLawyer.stats.totalArticles,
     change: '+2 ce mois-ci',
     icon: FileText
   },
@@ -739,5 +742,71 @@ const getStatusText = (status) => {
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('fr-FR')
+}
+
+const openNewArticleModal = () => {
+  selectedArticle.value = null;
+  showModal.value = true;
+
+}
+
+// Open modal for edit
+const openEditModal = (article) => {
+  selectedArticle.value = article
+  showModal.value = true
+}
+
+// Handle close
+const handleClose = () => {
+  showModal.value = false
+}
+
+// Handle save (create or update)
+const handleSave = (data) => {
+
+  const form = useForm(data);
+
+  if (data.id) {
+
+    console.log('Updating article:', data)
+    // update via API call or Inertia post/put
+
+    form.put(route("articles.update", data.id), {
+      onSuccess: () => {
+        toast.success("Article mis à jour avec succès", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        showModal.value = false;
+      },
+      onError: () => {
+        toast.error("Une erreur s'est produite lors de la mis à jour de l'article", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        console.log("Validation failed", form.errors);
+      },
+    });
+  } else {
+    console.log('Creating article:', data)
+    // create via API call
+
+    form.post(route("articles.store"), {
+      onSuccess: () => {
+        toast.success("Article créé avec succès", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        showModal.value = false;
+      },
+      onError: () => {
+        toast.error("Une erreur s'est produite lors de la création de l'article", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        console.log("Validation failed", form.errors);
+      },
+    });
+  }
 }
 </script>

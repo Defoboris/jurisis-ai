@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
 use App\Models\Conversation;
 use App\Models\Lawyer;
 use App\Models\Message;
@@ -57,7 +58,7 @@ class DashboardController extends Controller
 
         $authLawyer = $user;
         $authLawyer->stats = [
-            'totalArticles' => 24,
+            'totalArticles' => Article::where('lawyer_id', $user->id)->count(),
             'totalViews' => 15420,
             'totalMessages' => Message::whereHas('conversation', function ($query) use ($user) {$query->where('lawyer_id', $user->id);})->count(),
             'totalLikes' => 892,
@@ -65,7 +66,7 @@ class DashboardController extends Controller
             'profileViews' => 1847,
         ];
 
-        // dd($authLawyer);
+        $authLawyer->recentArticles = Article::where('lawyer_id', $user->id)->latest()->limit(3)->get();
 
         return Inertia::render('Admin/Dashboard', [
             'conversations' => $conversations,

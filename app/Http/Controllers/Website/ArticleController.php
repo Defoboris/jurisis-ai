@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Website;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\Lawyer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 
@@ -12,13 +14,14 @@ class ArticleController extends Controller
 {
     public function index()
     {
+
         return Inertia::render('Web/Article/Article');
     }
 
     // 🆕 Lawyer: create article
     public function store(Request $request)
     {
-        $lawyer = $request->user();
+        $lawyer = Auth::user();
 
         $data = $request->validate([
             'title' => 'required|string|max:255',
@@ -34,16 +37,13 @@ class ArticleController extends Controller
 
         $article = Article::create($data);
 
-        return response()->json([
-            'message' => 'Article créé avec succès',
-            'article' => $article
-        ]);
+        return redirect()->back();
     }
 
     // ✏️ Lawyer: update article
     public function update(Request $request, Article $article)
     {
-        $lawyer = $request->user();
+        $lawyer = Auth::user();
 
         if ($article->lawyer_id !== $lawyer->id) {
             abort(403, 'Vous ne pouvez modifier que vos propres articles.');
@@ -65,16 +65,13 @@ class ArticleController extends Controller
 
         $article->update($data);
 
-        return response()->json([
-            'message' => 'Article mis à jour avec succès',
-            'article' => $article
-        ]);
+        return redirect()->back();
     }
 
     // 🗑️ Lawyer: delete article
     public function destroy(Request $request, Article $article)
     {
-        $lawyer = $request->user();
+        $lawyer = Auth::user();
 
         if ($article->lawyer_id !== $lawyer->id) {
             abort(403, 'Vous ne pouvez supprimer que vos propres articles.');
@@ -92,10 +89,16 @@ class ArticleController extends Controller
             ->published()
             ->firstOrFail();
 
+        $lawyer = $article->lawyer;
+
+        $curentLaywer = Lawyer::where('user_id', $lawyer->id)->first();
+        
         $article->increment('views');
 
-        return Inertia::render('Web/Articles/Show', [
+        return Inertia::render('Web/Article/Article', [
             'article' => $article,
+            'lawyer' => $lawyer,
+            'curentLaywer' => $curentLaywer
         ]);
     }
 

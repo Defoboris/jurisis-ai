@@ -37,7 +37,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/lawyers', [LawyerController::class, 'index'])->name('lawyers');
 Route::get('/lawyers/details/{lawyer}', [LawyerController::class, 'show'])->name('lawyer.show');
 
-Route::get('/articles', [ArticleController::class, 'index'])->name('articles');
+Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 Route::get('/chat/stream', [ChatController::class, 'stream'])->name('chat.stream');

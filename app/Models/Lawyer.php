@@ -55,4 +55,9 @@ class Lawyer extends Model
             ->saveSlugsTo('slug')
             ->doNotGenerateSlugsOnUpdate();
     }
+
+    public function articles(): HasMany
+    {
+        return $this->hasMany(Article::class);
+    }
 }

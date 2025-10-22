@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'lawyer'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-     Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+    Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
     Route::post('/articles', [ArticleController::class, 'store'])->name('articles.store');
     Route::put('/articles/{article}', [ArticleController::class, 'update'])->name('articles.update');
     Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])->name('articles.destroy');
