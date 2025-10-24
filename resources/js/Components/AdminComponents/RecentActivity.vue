@@ -8,13 +8,17 @@ import {
   MessageSquare
 } from 'lucide-vue-next'
 
+
+const props = defineProps({
+  recentActivity: Array
+})
 const activities = ref([
-  { id: 1, type: 'user_registered', title: 'Nouvel utilisateur inscrit', description: 'Marie Dubois a créé un compte', time: '5 min', icon: UserPlus },
-  { id: 2, type: 'subscription_upgraded', title: 'Abonnement mis à niveau', description: 'Jean Martin est passé au plan Premium', time: '12 min', icon: CreditCard },
-  { id: 3, type: 'lawyer_joined', title: 'Nouvel avocat', description: 'Maître Sophie Bernard a rejoint la plateforme', time: '1h', icon: UserPlus },
+  { id: 1, type: 'user_registered', title: 'Nouvel utilisateur inscrit', description: `${props.recentActivity['user_registered'].name} a créé un compte`, time: '5 min', icon: UserPlus },
+  { id: 2, type: 'subscription_upgraded', title: 'Abonnement mis à niveau', description: `${props.recentActivity['subscription_upgraded'].user.name} est passé au plan Premium`, time: '12 min', icon: CreditCard },
+  { id: 3, type: 'lawyer_joined', title: 'Nouvel avocat', description: `${props.recentActivity['lawyer_joined'].name} a rejoint la plateforme`, time: '1h', icon: UserPlus },
   { id: 4, type: 'document_uploaded', title: 'Document téléchargé', description: 'Contrat de vente uploadé par Pierre Legrand', time: '2h', icon: FileText },
-  { id: 5, type: 'chat_consultation', title: 'Consultation chatbot', description: '45 nouvelles questions traitées', time: '3h', icon: MessageSquare },
-  { id: 6, type: 'user_blocked', title: 'Utilisateur bloqué', description: 'Compte de Paul Durand suspendu', time: '4h', icon: UserMinus }
+  { id: 5, type: 'chat_consultation', title: 'Consultation chatbot', description: `${props.recentActivity['chat_consultation']} a pos nouvelles questions traitées`, time: '3h', icon: MessageSquare },
+  { id: 6, type: 'user_blocked', title: 'Utilisateur bloqué', description: `${props.recentActivity['user_blocked']} suspendu`, time: '4h', icon: UserMinus }
 ])
 
 const getActivityColor = (type: string) => {

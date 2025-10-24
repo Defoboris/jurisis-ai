@@ -23,6 +23,9 @@ Route::middleware(['auth', 'lawyer'])->prefix('admin')->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('super-admin')->group(function () {
     Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
     Route::get('/user-management', [UserController::class, 'index'])->name('super-admin.user-management');
+    Route::put('/user-management/{user}', [UserController::class, 'suspend'])->name('super-admin.users.block');
+    Route::put('/user-management/{user}/enable', [UserController::class, 'unsuspend'])->name('super-admin.users.unblock');
+
     Route::get('/chatbot-management', [SuperAdminController::class, 'chatbotManagement'])->name('super-admin.chatbot-management');
 
     Route::get('/lawyer-management', [LawyerController::class, 'lawyerManagement'])->name('super-admin.lawyerManagement');

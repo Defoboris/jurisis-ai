@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PlanRequest;
+use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,6 +17,26 @@ class PlanController extends Controller
      */
     public function index()
     {
+        $subscriptions = Subscription::with(['user', 'plan'])->get();
+
+        $users = $subscriptions->map(function ($subscription) {
+            $user = $subscription->user;
+
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'status' => $subscription->status === 'active' ? 'Actif' : 'Inactif',
+                'subscription' => $subscription->plan->name ?? 'Aucun',
+                'joinDate' => $subscription->starts_at
+                    ? Carbon::parse($subscription->starts_at)->format('d/m/Y')
+                    : null,
+                'lastActive' => $user->last_login_at
+                    ? Carbon::parse($user->last_login_at)->diffForHumans()
+                    : 'Inconnu',
+            ];
+        });
         return Inertia::render('SuperAdmin/SubscriptionManagement', [
             'plans' => SubscriptionPlan::all()
         ]);

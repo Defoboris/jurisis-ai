@@ -1,83 +1,3 @@
-<script setup>
-import { ref } from 'vue'
-import { Search, Filter } from 'lucide-vue-next'
-
-import AdminLayout from '@/Layouts/Admin/AdminLayout.vue'
-import FilterBar from '@/Components/AdminComponents/FilterBar.vue'
-import DataTable from '@/Components/AdminComponents/DataTable.vue'
-import ActionModal from '@/Components/AdminComponents/ActionModal.vue'
-
-const searchQuery = ref('')
-const selectedFilter = ref('all')
-const showBlockModal = ref(false)
-const selectedUser = ref(null)
-
-const users = ref([
-  {
-    id: 1,
-    name: 'Jean Dupont',
-    email: 'jean.dupont@email.com',
-    role: 'Client',
-    status: 'Actif',
-    subscription: 'Premium',
-    joinDate: '15/01/2024',
-    lastActive: '2 heures'
-  },
-  {
-    id: 2,
-    name: 'Marie Martin',
-    email: 'marie.martin@email.com',
-    role: 'Client',
-    status: 'Actif',
-    subscription: 'Standard',
-    joinDate: '10/01/2024',
-    lastActive: '1 jour'
-  },
-  {
-    id: 3,
-    name: 'Pierre Legrand',
-    email: 'pierre.legrand@email.com',
-    role: 'Client',
-    status: 'Bloqué',
-    subscription: 'Gratuit',
-    joinDate: '05/01/2024',
-    lastActive: '5 jours'
-  }
-])
-
-const columns = [
-  { key: 'name', label: 'Nom', sortable: true },
-  { key: 'email', label: 'Email', sortable: true },
-  { key: 'role', label: 'Rôle', sortable: false },
-  { key: 'status', label: 'Statut', sortable: true },
-  { key: 'subscription', label: 'Abonnement', sortable: true },
-  { key: 'joinDate', label: "Date d'inscription", sortable: true },
-  { key: 'lastActive', label: 'Dernière activité', sortable: true },
-  { key: 'actions', label: 'Actions', sortable: false }
-]
-
-const filterOptions = [
-  { value: 'all', label: 'Tous les utilisateurs' },
-  { value: 'active', label: 'Actifs' },
-  { value: 'blocked', label: 'Bloqués' },
-  { value: 'premium', label: 'Premium' },
-  { value: 'standard', label: 'Standard' }
-]
-
-const handleBlockUser = (user) => {
-  selectedUser.value = user
-  showBlockModal.value = true
-}
-
-const confirmBlockUser = () => {
-  if (selectedUser.value) {
-    console.log('Blocking user:', selectedUser.value)
-  }
-  showBlockModal.value = false
-  selectedUser.value = null
-}
-</script>
-
 <template>
   <AdminLayout>
     <div class="flex flex-col gap-8">
@@ -89,11 +9,11 @@ const confirmBlockUser = () => {
             Gérer tous les utilisateurs de la plateforme
           </p>
         </div>
-        <button
+        <!-- <button
           class="inline-flex items-center px-4 py-2 font-medium text-white transition rounded-lg bg-primary hover:bg-green-700"
         >
           Inviter utilisateur
-        </button>
+        </button> -->
       </div>
 
       <!-- Filters + Search -->
@@ -120,12 +40,13 @@ const confirmBlockUser = () => {
       <!-- Table -->
       <div class="bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-900 dark:border-gray-700">
         <DataTable
-          :data="users"
+          :data="filteredUsers"
           :columns="columns"
+          @edit="handleUnblockUser"
           @action="handleBlockUser"
         />
       </div>
-
+      
       <!-- Modal -->
       <ActionModal
         v-if="showBlockModal"
@@ -140,3 +61,116 @@ const confirmBlockUser = () => {
     </div>
   </AdminLayout>
 </template>
+<script setup>
+import { ref, computed } from 'vue'
+import { Search, Filter } from 'lucide-vue-next'
+import { toast } from "vue3-toastify";
+import { useForm } from "@inertiajs/vue3";
+
+import AdminLayout from '@/Layouts/Admin/AdminLayout.vue'
+import FilterBar from '@/Components/AdminComponents/FilterBar.vue'
+import DataTable from '@/Components/AdminComponents/DataTable.vue'
+import ActionModal from '@/Components/AdminComponents/ActionModal.vue'
+
+const searchQuery = ref('')
+const selectedFilter = ref('all')
+const showBlockModal = ref(false)
+const selectedUser = ref(null)
+
+const props = defineProps({
+  users: {
+    type: Array,
+    required: true,
+  }
+})
+
+// 🔍 Computed list of users (search + filter)
+const filteredUsers = computed(() => {
+  const query = searchQuery.value.toLowerCase()
+
+  return props.users.filter((user) => {
+    const matchesSearch =
+      user.name?.toLowerCase().includes(query) ||
+      user.email?.toLowerCase().includes(query)
+
+    const matchesFilter =
+      selectedFilter.value === 'all' ||
+      (selectedFilter.value === 'active' && user.status === 'Actif') ||
+      (selectedFilter.value === 'blocked' && user.status === 'Bloqué') ||
+      (selectedFilter.value === 'premium' && user.subscription === 'Premium') ||
+      (selectedFilter.value === 'standard' && user.subscription === 'Standard')
+
+    return matchesSearch && matchesFilter
+  })
+})
+
+const columns = [
+  { key: 'name', label: 'Nom', sortable: true },
+  { key: 'email', label: 'Email', sortable: true },
+  { key: 'role', label: 'Rôle', sortable: false },
+  { key: 'status', label: 'Statut', sortable: true },
+  { key: 'joinDate', label: "Date d'inscription", sortable: true },
+  { key: 'actions', label: 'Actions', sortable: false }
+]
+
+const filterOptions = [
+  { value: 'all', label: 'Tous les utilisateurs' },
+  { value: 'active', label: 'Actifs' },
+  { value: 'blocked', label: 'Bloqués' },
+  { value: 'premium', label: 'Premium' },
+  { value: 'standard', label: 'Standard' }
+]
+
+// 🧱 Modal + actions
+const handleBlockUser = (user) => {
+  selectedUser.value = user;
+  showBlockModal.value = true
+}
+
+const confirmBlockUser = () => {
+  if (selectedUser.value) {
+    const tempForm = useForm(selectedUser.value)
+
+    tempForm.put(route('super-admin.users.block', { user: selectedUser.value.id }), {
+      onSuccess: () => {
+        toast.success("Utilisateur bloqué avec succès", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        showBlockModal.value = false;
+      },
+      onError: () => {
+        toast.error("Erreur lors du blocage de l'utilisateur", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        console.log("Validation failed", tempForm.errors);
+      },
+    });
+  }
+  showBlockModal.value = false
+  selectedUser.value = null
+}
+
+const handleUnblockUser = (user) => {
+  if (user) {
+    const tempForm = useForm(user)
+
+    tempForm.put(route('super-admin.users.unblock', { user: user.id }), {
+      onSuccess: () => {
+        toast.success("Utilisateur débloqué avec succès", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+      },
+      onError: () => {
+        toast.error("Erreur lors du déblocage de l'utilisateur", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        console.log("Validation failed", tempForm.errors);
+      },
+    });
+  }
+}
+</script>

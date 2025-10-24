@@ -33,12 +33,14 @@ import { usePage } from '@inertiajs/vue3'
 import AdminSidebar from './AdminSidebar.vue'
 import AdminHeader from './AdminHeader.vue'
 
+
+
 const page = usePage()
 const sidebarOpen = ref(false)
 const currentComponent = computed(() => page.props.component)
 
 const handlePageChange = (page) => {
-  emit("pageChange", page)
+  // emit("pageChange", page)
   sidebarOpen.value = false
 }
 </script>

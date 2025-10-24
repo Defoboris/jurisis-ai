@@ -1,24 +1,27 @@
 <script setup lang="ts">
+import { Link, usePage } from '@inertiajs/vue3'
+
 import {
   UserPlus,
   Plus,
   Settings,
   FileUp,
   BarChart3,
-  Bell
+  Bell,
+  Users
 } from 'lucide-vue-next'
 
 const actions = [
-  { id: 'add-user', title: 'Ajouter utilisateur', description: 'Inviter un nouvel utilisateur', icon: UserPlus, color: 'blue' },
-  { id: 'add-lawyer', title: 'Nouveau avocat', description: 'Enregistrer un avocat', icon: Plus, color: 'green' },
-  { id: 'system-config', title: 'Configuration', description: 'Paramètres système', icon: Settings, color: 'gray' },
-  { id: 'upload-docs', title: 'Documents', description: 'Gérer les ressources', icon: FileUp, color: 'yellow' },
-  { id: 'analytics', title: 'Rapports', description: 'Voir les statistiques', icon: BarChart3, color: 'teal' },
-  { id: 'notifications', title: 'Notifications', description: 'Centre de notifications', icon: Bell, color: 'purple' }
+  { id: 'super-admin.user-management', title: 'Gestion des utilisateur', description: 'Utilisateur', icon: Users, color: 'blue' },
+  { id: 'super-admin.lawyerManagement', title: 'Nouveau avocat', description: 'Enregistrer un avocat', icon: Plus, color: 'green' },
+  { id: 'super-admin.chatbot-management', title: 'Configuration', description: 'Paramètres système', icon: Settings, color: 'gray' },
+  { id: 'super-admin.subscriptionManagement', title: 'Gestion des abonnements', description: 'Gérer les ressources', icon: FileUp, color: 'yellow' },
+  { id: 'super-admin.subscriptions', title: 'Gérer les formules d’abonnement', description: 'Formules', icon: BarChart3, color: 'teal' },
+  { id: 'super-admin.chatbot-management', title: 'Notifications', description: 'Centre de notifications', icon: Bell, color: 'purple' }
 ]
 
 const handleAction = (actionId: string) => {
-  console.log(`Action triggered: ${actionId}`)
+  
 }
 </script>
 
@@ -32,10 +35,10 @@ const handleAction = (actionId: string) => {
 
     <!-- Actions grid -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-      <button
+      <Link
         v-for="action in actions"
         :key="action.id"
-        @click="handleAction(action.id)"
+       :href="route(action.id)"
         :class="`group flex flex-col items-center p-4 bg-white dark:bg-neutral-700 rounded-xl shadow hover:shadow-lg transition transform hover:-translate-y-1 border border-gray-200 dark:border-neutral-600`"
       >
         <!-- Icon -->
@@ -48,7 +51,7 @@ const handleAction = (actionId: string) => {
           <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ action.title }}</h4>
           <p class="text-xs text-gray-500 dark:text-gray-400">{{ action.description }}</p>
         </div>
-      </button>
+      </Link>
     </div>
   </div>
 </template>

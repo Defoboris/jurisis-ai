@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserRequest;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,7 +16,25 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::latest()->paginate(20);
+         $users = User::where(function ($query) {
+            $query->where('role', 'member')
+                ->orWhere('role', 'visitor');
+        })->get();
+
+        $users = $users->map(function ($user) {
+
+
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'status' => $user->status === 'active' ? 'Actif' : 'Inactif',
+                'joinDate' => $user->created_at
+                    ? Carbon::parse($user->created_at)->format('d/m/Y')
+                    : null,
+            ];
+        });
         return Inertia::render('SuperAdmin/UserManagement', ['users'=>$users]);
     }
 

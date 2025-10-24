@@ -29,7 +29,7 @@
 
         <!-- Recent activity -->
         <div class="content-section">
-          <RecentActivity />
+          <RecentActivity :recent-activity="recentActivity" />
         </div>
       </div>
     </div>
@@ -42,32 +42,37 @@ import StatsCard from "@/Components/AdminComponents/StatsCard.vue";
 import QuickActions from "@/Components/AdminComponents/QuickActions.vue";
 import RecentActivity from "@/Components/AdminComponents/RecentActivity.vue";
 
+const props = defineProps({
+  stats: Array ,
+  recentActivity: Array
+})
+
 
 const stats = ref([
   {
     title: 'Utilisateurs Total',
-    value: '12,847',
+    value: props.stats.users,
     change: '+12%',
     trend: 'up',
     icon: 'users'
   },
   {
     title: 'Avocats Actifs',
-    value: '1,234',
+    value: props.stats.lawyers,
     change: '+8%',
     trend: 'up',
     icon: 'lawyers'
   },
   {
     title: 'Abonnements',
-    value: '8,672',
+    value: props.stats.subscription,
     change: '+15%',
     trend: 'up',
     icon: 'subscriptions'
   },
   {
     title: 'Revenus Mensuel',
-    value: '€45,230',
+    value: '$' + props.stats.totalAmount,
     change: '+23%',
     trend: 'up',
     icon: 'revenue'
