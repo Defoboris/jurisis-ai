@@ -64,6 +64,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Stripe checkout initiation (from frontend)
+Route::post('/checkout', [SubscriptionController::class, 'checkout'])->name('checkout');
+
+Route::get('/checkout/success', [SubscriptionController::class, 'success'])->name('checkout.success');
+Route::get('/checkout/cancel', [SubscriptionController::class, 'cancel'])->name('checkout.cancel');
+
+
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
 

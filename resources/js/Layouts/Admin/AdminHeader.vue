@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { Link } from "@inertiajs/vue3"
+import { Link, usePage } from "@inertiajs/vue3"
 import { Menu, Bell } from "lucide-vue-next"
+
+import Dropdown from "@/Components/Dropdown.vue"
+import DropdownLink from "@/Components/DropdownLink.vue"
+
+const page = usePage();
 
 defineEmits<{
   toggleSidebar: []
@@ -29,13 +34,20 @@ defineEmits<{
           </span>
         </Link>
 
-        <div class="flex items-center">
-          <div
+        <Dropdown class="flex items-center" align="right" width="48">
+          <template #trigger>
+            <div
             class="flex items-center justify-center w-8 h-8 text-xs font-semibold text-white rounded-full bg-primary"
           >
             SA
           </div>
-        </div>
+          </template>
+          <template #content>
+            <DropdownLink :href="route('logout')" method="post" as="button">
+              Se déconnecter
+            </DropdownLink>
+          </template>
+        </Dropdown>
       </div>
     </div>
   </header>
