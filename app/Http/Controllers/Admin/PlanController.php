@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PlanRequest;
+use App\Models\ChatbotMessage;
+use App\Models\ChatbotSession;
+use App\Models\Payment;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use Carbon\Carbon;
@@ -19,26 +22,53 @@ class PlanController extends Controller
     {
         $subscriptions = Subscription::with(['user', 'plan'])->get();
 
-        $users = $subscriptions->map(function ($subscription) {
-            $user = $subscription->user;
+        $stats = [
+            'total' => Payment::where('status', 'paid')->sum('amount_cents'),
+
+            'active' => $subscriptions->where('status', 'active')->count(),
+            'inactive' => $subscriptions->where('status', 'inactive')->count(),
+
+            'messages_percent' => ChatbotSession::count() > 0
+                ? round(ChatbotSession::count() * 100 / ChatbotMessage::count(), 2)
+                : 0,
+
+            'anulet_percent' => Payment::where('status', 'cancelled')->count() > 0
+                ? round(
+                    Payment::where('status', 'paid')->sum('amount_cents') /
+                        Payment::where('status', 'cancelled')->count() * 100,
+                    2
+                )
+                : 0,
+        ];
+
+        $payments = Payment::with(['user', 'subscription', 'subscription.plan'])->get();
+
+        $subscriptions = $payments->map(function ($payment) {
+            $user = $payment->user;
+            $subscription = $payment->subscription;
+
+
+
 
             return [
                 'id' => $user->id,
-                'name' => $user->name,
+                'user' => $user->name,
                 'email' => $user->email,
-                'role' => $user->role,
+                'plan' => $subscription->plan->name ?? 'Aucun',
                 'status' => $subscription->status === 'active' ? 'Actif' : 'Inactif',
-                'subscription' => $subscription->plan->name ?? 'Aucun',
-                'joinDate' => $subscription->starts_at
-                    ? Carbon::parse($subscription->starts_at)->format('d/m/Y')
+                'amount' => $payment->amount_cents ?? 'Aucun',
+                'nextBilling' => $subscription->end_at
+                    ? Carbon::parse($subscription->end_at)->format('d/m/Y')
                     : null,
-                'lastActive' => $user->last_login_at
-                    ? Carbon::parse($user->last_login_at)->diffForHumans()
-                    : 'Inconnu',
+                'duration' => 30,
+                'paymentMethod' =>'Carte bancaire'
             ];
         });
+
         return Inertia::render('SuperAdmin/SubscriptionManagement', [
-            'plans' => SubscriptionPlan::all()
+            'plans' => SubscriptionPlan::all(),
+            'stats' => $stats,
+            'subscriptions' => $subscriptions
         ]);
     }
 
@@ -48,7 +78,7 @@ class PlanController extends Controller
     public function store(PlanRequest $request)
     {
         SubscriptionPlan::create($request->validated());
-        return back()->with('success','Plan created');
+        return back()->with('success', 'Plan created');
     }
 
     /**
@@ -57,7 +87,7 @@ class PlanController extends Controller
     public function update(PlanRequest $request, SubscriptionPlan $plan)
     {
         $plan->update($request->validated());
-        return back()->with('success','Plan updated');
+        return back()->with('success', 'Plan updated');
     }
 
     /**
@@ -66,6 +96,6 @@ class PlanController extends Controller
     public function destroy(SubscriptionPlan $plan)
     {
         $plan->delete();
-        return back()->with('success','Plan deleted');
+        return back()->with('success', 'Plan deleted');
     }
 }

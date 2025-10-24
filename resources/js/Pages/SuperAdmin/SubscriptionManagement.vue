@@ -1,3 +1,88 @@
+<template>
+  <AdminLayout>
+    <div class="subscription-management">
+    <!-- Page header -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Gestion des abonnements</h1>
+        <p class="page-subtitle">Gérer les plans, paiements et facturation</p>
+      </div>
+      <div class="header-actions">
+        <button class="flex items-center gap-3 px-6 py-2 text-white transition rounded-lg bg-primary hover:bg-green-700">
+          <BarChart2 class="w-4 h-4" />
+          Rapport financier
+        </button>
+        <button class="flex items-center gap-3 px-6 py-2 text-gray-600 transition bg-gray-100 border-2 border-gray-400 rounded-lg hover:bg-gray-400 hover:text-white">
+          <DollarSign class="w-4 h-4" />
+          Nouveau plan
+        </button>
+      </div>
+    </div>
+
+    <!-- Revenue stats -->
+    <div class="stats-section">
+      <div class="stats-grid">
+        <div v-for="stat in stats" :key="stat.title" class="stat-card">
+          <div class="stat-header">
+            <h3 class="stat-title">{{ stat.title }}</h3>
+            <div class="stat-trend" :class="stat.trend === 'up' ? 'trend-up' : 'trend-down'">
+              {{ stat.change }}
+            </div>
+          </div>
+          <div class="stat-value">{{ stat.value }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart section -->
+    <div class="chart-section">
+      <SubscriptionChart />
+    </div>
+
+    <!-- Filters and search -->
+    <div class="filters-section">
+      <div class="search-bar">
+        <div class="search-wrapper">
+          <Search class="search-icon" />
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Rechercher par utilisateur ou email..."
+            class="search-input"
+          >
+        </div>
+      </div>
+      
+      <FilterBar
+        v-model="selectedFilter"
+        :options="filterOptions"
+        icon-component="FunnelIcon"
+      />
+    </div>
+
+    <!-- Subscriptions table -->
+    <div class="table-container">
+      <DataTable
+        :data="props.subscriptions"
+        :columns="columns"
+        @action="handleCancelSubscription"
+      />
+    </div>
+
+    <!-- Cancel subscription modal -->
+    <ActionModal
+      v-if="showCancelModal"
+      title="Annuler l'abonnement"
+      :message="`Êtes-vous sûr de vouloir annuler l'abonnement ${selectedSubscription?.plan} de ${selectedSubscription?.user} ?`"
+      confirm-text="Annuler l'abonnement"
+      cancel-text="Garder l'abonnement"
+      type="destructive"
+      @confirm="confirmCancelSubscription"
+      @cancel="showCancelModal = false"
+    />
+  </div>
+  </AdminLayout>
+</template>
 <script setup>
 import { ref, computed } from 'vue'
 
@@ -16,6 +101,15 @@ const searchQuery = ref('')
 const selectedFilter = ref('all')
 const showCancelModal = ref(false)
 const selectedSubscription = ref(null)
+
+const props = defineProps({
+  subscriptions: {
+    type: Array,
+    required: true,
+  },
+  stats: Array
+})
+
 
 const subscriptions = ref([
   {
@@ -88,28 +182,28 @@ const filterOptions = [
 const stats = computed(() => [
   {
     title: 'Revenus totaux',
-    value: '€45,230',
+    value:  props.stats.total + ' $',
     change: '+12%',
     trend: 'up',
     icon: 'revenue'
   },
   {
     title: 'Abonnements actifs',
-    value: '1,247',
+    value: props.stats.active,
     change: '+8%', 
     trend: 'up',
     icon: 'subscriptions'
   },
   {
     title: 'Taux de conversion',
-    value: '24.8%',
+    value: props.stats.messages_percent + '%',
     change: '+3%',
     trend: 'up',
     icon: 'conversion'
   },
   {
     title: 'Taux d\'annulation',
-    value: '2.1%',
+    value: props.stats.anulet_percent + '%',
     change: '-1%',
     trend: 'down',
     icon: 'churn'
@@ -130,91 +224,6 @@ const confirmCancelSubscription = () => {
 }
 </script>
 
-<template>
-  <AdminLayout>
-    <div class="subscription-management">
-    <!-- Page header -->
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">Gestion des abonnements</h1>
-        <p class="page-subtitle">Gérer les plans, paiements et facturation</p>
-      </div>
-      <div class="header-actions">
-        <button class="flex items-center gap-3 px-6 py-2 text-white transition rounded-lg bg-primary hover:bg-green-700">
-          <BarChart2 class="w-4 h-4" />
-          Rapport financier
-        </button>
-        <button class="flex items-center gap-3 px-6 py-2 text-gray-600 transition bg-gray-100 border-2 border-gray-400 rounded-lg hover:bg-gray-400 hover:text-white">
-          <DollarSign class="w-4 h-4" />
-          Nouveau plan
-        </button>
-      </div>
-    </div>
-
-    <!-- Revenue stats -->
-    <div class="stats-section">
-      <div class="stats-grid">
-        <div v-for="stat in stats" :key="stat.title" class="stat-card">
-          <div class="stat-header">
-            <h3 class="stat-title">{{ stat.title }}</h3>
-            <div class="stat-trend" :class="stat.trend === 'up' ? 'trend-up' : 'trend-down'">
-              {{ stat.change }}
-            </div>
-          </div>
-          <div class="stat-value">{{ stat.value }}</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chart section -->
-    <div class="chart-section">
-      <SubscriptionChart />
-    </div>
-
-    <!-- Filters and search -->
-    <div class="filters-section">
-      <div class="search-bar">
-        <div class="search-wrapper">
-          <Search class="search-icon" />
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Rechercher par utilisateur ou email..."
-            class="search-input"
-          >
-        </div>
-      </div>
-      
-      <FilterBar
-        v-model="selectedFilter"
-        :options="filterOptions"
-        icon-component="FunnelIcon"
-      />
-    </div>
-
-    <!-- Subscriptions table -->
-    <div class="table-container">
-      <DataTable
-        :data="subscriptions"
-        :columns="columns"
-        @action="handleCancelSubscription"
-      />
-    </div>
-
-    <!-- Cancel subscription modal -->
-    <ActionModal
-      v-if="showCancelModal"
-      title="Annuler l'abonnement"
-      :message="`Êtes-vous sûr de vouloir annuler l'abonnement ${selectedSubscription?.plan} de ${selectedSubscription?.user} ?`"
-      confirm-text="Annuler l'abonnement"
-      cancel-text="Garder l'abonnement"
-      type="destructive"
-      @confirm="confirmCancelSubscription"
-      @cancel="showCancelModal = false"
-    />
-  </div>
-  </AdminLayout>
-</template>
 
 <style scoped>
 .subscription-management {
