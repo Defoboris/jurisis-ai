@@ -37,6 +37,21 @@ class SuperAdminController extends Controller
         ]);
     }
 
+    public function restApi()
+    {
+         $stats = [
+            'users' => User::whereIn('role', ['member', 'visitor'])->count(),
+            'lawyers' => User::where('role', 'lawyer')->count(),
+            'subscription' => Subscription::where('status', 'active')->count(),
+            'totalAmount' => Payment::where('status', 'paid')->sum('amount_cents')
+
+        ];
+
+        return response([
+            'stats' => $stats
+        ]);
+    }
+
     public function userManagement()
     {
        
