@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\SuperAdminController;
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,8 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/login', [AuthController::class, 'login']);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::get('/stats', [App\Http\Controllers\Admin\SuperAdminController::class, 'restApi']);
+
+Route::middleware(['auth:sanctum', 'superadmin'])->group(function () {
+    Route::post('/user-create', [SuperAdminController::class, 'createUser']);
+    Route::put('/user-update/{id}', [SuperAdminController::class, 'updateUser']);
+});

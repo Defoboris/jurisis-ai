@@ -1,6 +1,7 @@
 <template>
   <AdminLayout>
     <div class="flex flex-col gap-8">
+
       <!-- Header -->
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -9,11 +10,41 @@
             Gérer tous les utilisateurs de la plateforme
           </p>
         </div>
-        <!-- <button
-          class="inline-flex items-center px-4 py-2 font-medium text-white transition rounded-lg bg-primary hover:bg-green-700"
-        >
-          Inviter utilisateur
-        </button> -->
+      </div>
+
+      <!-- API Key Section -->
+      <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-900 dark:border-gray-700">
+        <h2 class="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">API Key</h2>
+
+        <div class="flex items-center gap-3">
+          <!-- API Key Display -->
+          <input
+            :type="showApiKey ? 'text' : 'password'"
+            v-model="apiKey"
+            readonly
+            class="flex-1 px-3 py-2 text-sm border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
+          />
+
+          <!-- Show / Hide Button -->
+          <button
+            @click="showApiKey = !showApiKey"
+            class="px-3 py-2 text-sm bg-gray-200 rounded-lg dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
+          >
+            {{ showApiKey ? 'Hide' : 'Show' }}
+          </button>
+
+          <!-- Copy Button -->
+          <button
+            @click="copyApiKey"
+            class="px-3 py-2 text-sm text-white bg-green-600 rounded-lg hover:bg-green-700"
+          >
+            Copy
+          </button>
+        </div>
+
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          Copy this API key to use in external services.
+        </p>
       </div>
 
       <!-- Filters + Search -->
@@ -61,6 +92,7 @@
     </div>
   </AdminLayout>
 </template>
+
 <script setup>
 import { ref, computed } from 'vue'
 import { Search, Filter } from 'lucide-vue-next'
@@ -72,11 +104,19 @@ import FilterBar from '@/Components/AdminComponents/FilterBar.vue'
 import DataTable from '@/Components/AdminComponents/DataTable.vue'
 import ActionModal from '@/Components/AdminComponents/ActionModal.vue'
 
+// -------------------
+// Reactive Variables
+// -------------------
 const searchQuery = ref('')
 const selectedFilter = ref('all')
 const showBlockModal = ref(false)
 const selectedUser = ref(null)
+const apiKey = ref("sk_live_1234abcd5678efgh9012xyz") // Replace with your real API key
+const showApiKey = ref(false)
 
+// -------------------
+// Props
+// -------------------
 const props = defineProps({
   users: {
     type: Array,
@@ -84,7 +124,9 @@ const props = defineProps({
   }
 })
 
-// 🔍 Computed list of users (search + filter)
+// -------------------
+// Computed Users (Search + Filter)
+// -------------------
 const filteredUsers = computed(() => {
   const query = searchQuery.value.toLowerCase()
 
@@ -104,6 +146,9 @@ const filteredUsers = computed(() => {
   })
 })
 
+// -------------------
+// Table Columns
+// -------------------
 const columns = [
   { key: 'name', label: 'Nom', sortable: true },
   { key: 'email', label: 'Email', sortable: true },
@@ -113,6 +158,9 @@ const columns = [
   { key: 'actions', label: 'Actions', sortable: false }
 ]
 
+// -------------------
+// Filters Options
+// -------------------
 const filterOptions = [
   { value: 'all', label: 'Tous les utilisateurs' },
   { value: 'active', label: 'Actifs' },
@@ -121,7 +169,20 @@ const filterOptions = [
   { value: 'standard', label: 'Standard' }
 ]
 
-// 🧱 Modal + actions
+// -------------------
+// API Key Copy Function
+// -------------------
+const copyApiKey = async () => {
+  await navigator.clipboard.writeText(apiKey.value);
+  toast.success("API key copied!", {
+    autoClose: 2000,
+    position: "top-right",
+  });
+};
+
+// -------------------
+// Modal Actions
+// -------------------
 const handleBlockUser = (user) => {
   selectedUser.value = user;
   showBlockModal.value = true
