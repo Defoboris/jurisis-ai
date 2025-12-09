@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import {
   UserPlus,
   UserMinus,
@@ -8,29 +8,101 @@ import {
   MessageSquare
 } from 'lucide-vue-next'
 
-
 const props = defineProps({
-  recentActivity: Array
+  recentActivity: Object
 })
-const activities = ref([
-  { id: 1, type: 'user_registered', title: 'Nouvel utilisateur inscrit', description: `${props.recentActivity['user_registered'].name} a créé un compte`, time: '5 min', icon: UserPlus },
-  { id: 2, type: 'subscription_upgraded', title: 'Abonnement mis à niveau', description: `${props.recentActivity['subscription_upgraded'].user.name} est passé au plan Premium`, time: '12 min', icon: CreditCard },
-  { id: 3, type: 'lawyer_joined', title: 'Nouvel avocat', description: `${props.recentActivity['lawyer_joined'].name} a rejoint la plateforme`, time: '1h', icon: UserPlus },
-  { id: 4, type: 'document_uploaded', title: 'Document téléchargé', description: 'Contrat de vente uploadé par Pierre Legrand', time: '2h', icon: FileText },
-  { id: 5, type: 'chat_consultation', title: 'Consultation chatbot', description: `${props.recentActivity['chat_consultation']} a pos nouvelles questions traitées`, time: '3h', icon: MessageSquare },
-  { id: 6, type: 'user_blocked', title: 'Utilisateur bloqué', description: `${props.recentActivity['user_blocked']} suspendu`, time: '4h', icon: UserMinus }
-])
+
+const activities = ref([])
+
+onMounted(() => {
+  // Dynamic contact messages from backend
+  const contactActivities = (props.recentActivity.contact_message ?? []).map(
+    (msg: any, index: number) => ({
+      id: `contact-${index}`,
+      type: 'contact_message',
+      title: 'Nouveau message de contact',
+      description: `${msg.first_name} ${msg.last_name} : "${msg.message.substring(
+        0,
+        40
+      )}..."`,
+      time: msg.created_at,
+      icon: MessageSquare
+    })
+  )
+
+  // Static activities
+  const staticActivities = [
+    {
+      id: 1,
+      type: 'user_registered',
+      title: 'Nouvel utilisateur inscrit',
+      description: `${props.recentActivity['user_registered'].name} a créé un compte`,
+      time: '5 min',
+      icon: UserPlus
+    },
+    {
+      id: 2,
+      type: 'subscription_upgraded',
+      title: 'Abonnement mis à niveau',
+      description: `${props.recentActivity['subscription_upgraded'].user.name} est passé au plan Premium`,
+      time: '12 min',
+      icon: CreditCard
+    },
+    {
+      id: 3,
+      type: 'lawyer_joined',
+      title: 'Nouvel avocat',
+      description: `${props.recentActivity['lawyer_joined'].name} a rejoint la plateforme`,
+      time: '1h',
+      icon: UserPlus
+    },
+    {
+      id: 4,
+      type: 'document_uploaded',
+      title: 'Document téléchargé',
+      description: 'Contrat de vente uploadé par Pierre Legrand',
+      time: '2h',
+      icon: FileText
+    },
+    {
+      id: 5,
+      type: 'chat_consultation',
+      title: 'Consultation chatbot',
+      description: `${props.recentActivity['chat_consultation']} nouvelles questions traitées`,
+      time: '3h',
+      icon: MessageSquare
+    },
+    {
+      id: 6,
+      type: 'user_blocked',
+      title: 'Utilisateur bloqué',
+      description: `${props.recentActivity['user_blocked']} suspendu`,
+      time: '4h',
+      icon: UserMinus
+    }
+  ]
+
+  // Merge both
+  activities.value = [...contactActivities, ...staticActivities]
+})
 
 const getActivityColor = (type: string) => {
   switch (type) {
+    case 'contact_message':
+      return 'bg-blue-100 text-blue-600'
     case 'user_registered':
-    case 'lawyer_joined': return 'bg-green-100 text-green-600'
-    case 'user_blocked': return 'bg-red-100 text-red-600'
-    case 'subscription_upgraded': return 'bg-yellow-100 text-yellow-600'
-    default: return 'bg-blue-100 text-blue-600'
+    case 'lawyer_joined':
+      return 'bg-green-100 text-green-600'
+    case 'user_blocked':
+      return 'bg-red-100 text-red-600'
+    case 'subscription_upgraded':
+      return 'bg-yellow-100 text-yellow-600'
+    default:
+      return 'bg-blue-100 text-blue-600'
   }
 }
 </script>
+
 
 <template>
   <div class="p-6 space-y-6 bg-white shadow dark:bg-neutral-800 rounded-xl">

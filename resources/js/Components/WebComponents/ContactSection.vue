@@ -54,13 +54,13 @@
 
               <div class="pt-4 text-center">
                 <p class="mb-2 text-sm text-muted-foreground">Ou essayez notre IA gratuitement</p>
-                <button 
-                  @click="startChat"
+                <Link 
+                  :href="route('chat')"
                   class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors bg-transparent border rounded-md whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border-input hover:bg-accent hover:text-accent-foreground"
                 >
                   <MessageSquare class="w-4 h-4 mr-2" />
                   Parler à Jurisis
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -99,6 +99,9 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { MessageSquare, Phone, Mail, MapPin } from 'lucide-vue-next'
+import { Link, router  } from "@inertiajs/vue3";
+import { toast } from "vue3-toastify";
+
 
 const form = reactive({
   firstName: '',
@@ -132,9 +135,30 @@ const contactInfo = ref([
 ])
 
 const submitForm = () => {
-  console.log('Form submitted:', form)
-  // Handle form submission logic here
-}
+  router.post(route('contact.store'), form, {
+    preserveScroll: true,
+    onSuccess: () => {
+      toast.success("Merci pour votre message, nous vous contacterons sous peu", {
+        autoClose: 3000,
+        position: "top-right",
+      });
+
+      // Reset the form
+      form.firstName = '';
+      form.lastName = '';
+      form.email = '';
+      form.company = '';
+      form.message = '';
+    },
+    onError: (errors) => {
+      toast.error("Veuillez vérifier les informations du formulaire.", {
+        autoClose: 3000,
+        position: "top-right",
+      });
+      console.log(errors)
+    }
+  });
+};
 
 const startChat = () => {
   console.log('Starting chat with Jurisis AI')

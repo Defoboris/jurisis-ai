@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ChatbotMessage;
+use App\Models\ContactRequest;
 use App\Models\Payment;
 use App\Models\Subscription;
 use App\Models\User;
@@ -32,6 +33,7 @@ class SuperAdminController extends Controller
             'lawyer_joined' => User::where('role', 'lawyer')->latest()->first(),
             'chat_consultation' => ChatbotMessage::count(),
             'user_blocked' => User::where('role', 'member')->where('status', 'suspended')->count(),
+            'contact_message' => ContactRequest::latest()->take(5)->get(),
         ];
 
         return Inertia::render('SuperAdmin/Dashboard', [

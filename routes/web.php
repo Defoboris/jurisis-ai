@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\SubscriptionController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Member\MessageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Website\AboutController;
@@ -69,6 +70,7 @@ Route::post('/checkout', [SubscriptionController::class, 'checkout'])->name('che
 
 Route::get('/checkout/success', [SubscriptionController::class, 'success'])->name('checkout.success');
 Route::get('/checkout/cancel', [SubscriptionController::class, 'cancel'])->name('checkout.cancel');
+Route::post('/contact/store', [ContactController::class, 'store'])->name('contact.store');
 
 
 require __DIR__.'/auth.php';
