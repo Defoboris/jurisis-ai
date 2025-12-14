@@ -71,6 +71,7 @@
           </template>
 
           <template #content>
+            <DropdownLink :href="route('profile.edit')" as="button"> Profile </DropdownLink>
             <DropdownLink :href="route('logout')" method="post" as="button"> Se déconnecter </DropdownLink>
           </template>
         </Dropdown>
