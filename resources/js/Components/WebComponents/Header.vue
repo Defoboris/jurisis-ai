@@ -34,14 +34,14 @@
         <Link :href="route('subscriptions-plans')"
           class="flex items-center gap-1 font-medium transition-colors text-foreground hover:text-primary"
           :class="page.url === '/subscriptions-plans' ? 'text-primary font-extrabold' : ''">
-          <Podcast class="w-4 h-4" /> Abonnements
+          <Podcast class="w-4 h-4" /> Abonnements 
         </Link>
       </nav>
 
       <!-- USER AREA -->
       <div v-if="page.props.auth.user">
         <!-- Admin / Lawyer -->
-        <div v-if="['admin', 'Lawyer'].includes(page.props.auth.user.role)" class="flex items-center gap-4">
+        <div v-if="['admin', 'lawyer'].includes(page.props.auth.user.role)" class="flex items-center gap-4">
           <Link :href="route('dashboard')" v-if="page.props.auth.user.role === 'lawyer'">
             <button class="inline-flex items-center font-medium hover:text-primary">
               <User class="w-5 h-5 mr-2" /> Dashboard

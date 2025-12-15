@@ -12,41 +12,6 @@
         </div>
       </div>
 
-      <!-- API Key Section -->
-      <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-900 dark:border-gray-700">
-        <h2 class="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">API Key</h2>
-
-        <div class="flex items-center gap-3">
-          <!-- API Key Display -->
-          <input
-            :type="showApiKey ? 'text' : 'password'"
-            v-model="apiKey"
-            readonly
-            class="flex-1 px-3 py-2 text-sm border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
-          />
-
-          <!-- Show / Hide Button -->
-          <button
-            @click="showApiKey = !showApiKey"
-            class="px-3 py-2 text-sm bg-gray-200 rounded-lg dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
-          >
-            {{ showApiKey ? 'Hide' : 'Show' }}
-          </button>
-
-          <!-- Copy Button -->
-          <button
-            @click="copyApiKey"
-            class="px-3 py-2 text-sm text-white bg-green-600 rounded-lg hover:bg-green-700"
-          >
-            Copy
-          </button>
-        </div>
-
-        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-          Copy this API key to use in external services.
-        </p>
-      </div>
-
       <!-- Filters + Search -->
       <div class="flex flex-col gap-4 md:flex-row md:items-center">
         <!-- Search -->
@@ -73,6 +38,7 @@
         <DataTable
           :data="filteredUsers"
           :columns="columns"
+          :tableUse="'users'"
           @edit="handleUnblockUser"
           @action="handleBlockUser"
         />

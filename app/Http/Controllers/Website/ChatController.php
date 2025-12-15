@@ -44,7 +44,7 @@ class ChatController extends Controller
             );
 
             if ($session->is_limited || $session->request_number <= 0) {
-                return ApiResponse::error('Vous avez atteint le nombre maximum de requêtes', 429);
+                return ApiResponse::error('Vous avez atteint la limite de requêtes. Abonnez-vous pour continuer à profiter du service.', 429);
             }
 
             $userMessage = $request->query('message');

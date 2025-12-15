@@ -52,13 +52,13 @@
                     class="w-full px-4 py-2 text-sm text-left hover:bg-gray-100 dark:hover:bg-neutral-700"
                     @click="$emit('edit', item); activeDropdown = null"
                   >
-                    Modifier
+                    {{ props.tableUse === 'users' ? 'Débloquer' : 'Modifier' }}
                   </button>
                   <button
                     class="w-full px-4 py-2 text-sm text-left text-red-600 hover:bg-red-100 dark:hover:bg-red-700 dark:text-red-400"
                     @click="$emit('action', item); activeDropdown = null"
                   >
-                    {{ item.status === "Actif" ? "Bloquer" : "Débloquer" }}
+                    Bloquer <!--  {{ item.status === "Actif" ? "Bloquer" : "Débloquer" }} -->
                   </button>
                 </div>
               </div>
@@ -85,6 +85,7 @@ interface Column {
 interface Props {
   data: any[];
   columns: Column[];
+  tableUse: String
 }
 
 const props = defineProps<Props>();

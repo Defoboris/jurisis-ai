@@ -18,11 +18,11 @@
           </div>
           <div class="flex items-center gap-4">
             <!-- View public profile button -->
-            <button
+            <Link :href="route('lawyer.show', authLawyer?.lawyer?.id)"
               class="inline-flex items-center justify-center px-3 text-sm font-medium transition-colors border rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border-input bg-background hover:bg-accent hover:text-accent-foreground h-9">
               <Eye class="w-4 h-4 mr-2" />
               Voir mon profil public
-            </button>
+            </Link>
 
             <!-- Profile & Dropdown -->
             <div class="relative flex items-center gap-2">
@@ -61,7 +61,7 @@
                 </template>
 
                 <template #content>
-                  <!-- <DropdownLink :href="route('profile.edit')">Profile</DropdownLink> -->
+                  <DropdownLink :href="route('profile.edit')">Profile</DropdownLink>
                   <DropdownLink :href="route('logout')" method="post" as="button">
                     Se déconnecter
                   </DropdownLink>
@@ -581,7 +581,7 @@ const tabs = [
   { value: 'articles', label: 'Articles', icon: BookOpen },
   // { value: 'profile', label: 'Profil', icon: Users },
   { value: 'messages', label: 'Messages', icon: MessageCircle },
-  { value: 'settings', label: 'Paramètres', icon: Settings },
+  // { value: 'settings', label: 'Paramètres', icon: Settings },
 ]
 
 const statsCards = computed(() => [

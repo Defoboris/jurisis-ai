@@ -17,6 +17,8 @@ class DashboardController extends Controller
     {
         $user = Auth::user()->load('lawyer');
 
+        $authLawyer = Lawyer::where('user_id', $user->id)->first();
+
         // available lawyers for "start conversation" UI
         $availableLawyers = Lawyer::with('user')->get()->map(function ($l) {
             return [
@@ -39,7 +41,7 @@ class DashboardController extends Controller
             'member',
             'messages' => fn($q) => $q->latest()->limit(1)
         ])
-            ->where('lawyer_id', $user->id)
+            ->where('lawyer_id', $authLawyer->id)
             ->latest()
             ->get()
             ->map(function ($conv) {

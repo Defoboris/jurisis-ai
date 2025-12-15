@@ -33,6 +33,11 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        if ($request->user()->status === 'suspended') {
+            Auth::guard('web')->logout();
+            return redirect('/');
+        }
+
         $request->session()->regenerate();
 
         switch ($request->user()->role) {

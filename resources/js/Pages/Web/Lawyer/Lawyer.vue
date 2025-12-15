@@ -63,16 +63,7 @@
                 </span>
               </div>
 
-              <div class="flex items-center justify-between pt-2 text-sm border-t text-muted-foreground border-border/50">
-                <div class="flex items-center gap-1">
-                  <Calendar class="w-3 h-3" />
-                  {{ lawyer.experience }}
-                </div>
-                <div class="flex items-center gap-1">
-                  <BookOpen class="w-3 h-3" />
-                  5 articles
-                </div>
-              </div>
+            
 
               <div class="pt-2">
                 <p class="mb-3 text-xs text-muted-foreground">Dernier article: ""</p>

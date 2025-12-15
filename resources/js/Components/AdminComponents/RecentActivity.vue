@@ -36,7 +36,7 @@ onMounted(() => {
       id: 1,
       type: 'user_registered',
       title: 'Nouvel utilisateur inscrit',
-      description: `${props.recentActivity['user_registered'].name} a créé un compte`,
+      description: `${props.recentActivity['user_registered']?.name ?? 'Un utilisateur'} a créé un compte`,
       time: '5 min',
       icon: UserPlus
     },
@@ -44,7 +44,7 @@ onMounted(() => {
       id: 2,
       type: 'subscription_upgraded',
       title: 'Abonnement mis à niveau',
-      description: `${props.recentActivity['subscription_upgraded'].user.name} est passé au plan Premium`,
+      description: `${props.recentActivity['subscription_upgraded']?.user?.name ?? 'Un utilisateur'} est passé au plan Premium`,
       time: '12 min',
       icon: CreditCard
     },
@@ -52,7 +52,7 @@ onMounted(() => {
       id: 3,
       type: 'lawyer_joined',
       title: 'Nouvel avocat',
-      description: `${props.recentActivity['lawyer_joined'].name} a rejoint la plateforme`,
+      description: `${props.recentActivity['lawyer_joined']?.name?? 'Un avocat'} a rejoint la plateforme`,
       time: '1h',
       icon: UserPlus
     },
@@ -111,7 +111,6 @@ const getActivityColor = (type: string) => {
       <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Activité récente</h3>
       <button class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Voir tout</button>
     </div>
-
     <!-- Activity list -->
     <div class="space-y-4">
       <div

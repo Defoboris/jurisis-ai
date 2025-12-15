@@ -18,7 +18,7 @@ class LawyerController extends Controller
 
     public function index()
     {
-        $lawyers = Lawyer::with('user')->paginate(6);
+        $lawyers = Lawyer::with('user', 'articles')->where('moderation_state', 'approved')->paginate(6);
         return Inertia::render('Web/Lawyer/Lawyer', [
             'lawyers' => $lawyers
         ]);
@@ -39,7 +39,7 @@ class LawyerController extends Controller
     {
         $lawyer->load('user');
         
-        $lawyer->articles = Article::published()->latest('published_at')->get(['id', 'title', 'content', 'slug', 'published_at', 'views', 'likes', 'comments_count']);
+        $lawyer->articles = Article::published()->latest('published_at')->where('lawyer_id', $lawyer->id)->get(['id', 'title', 'content', 'slug', 'published_at', 'views', 'likes', 'comments_count']);
         return Inertia::render('Web/Lawyer/LawyerDetails', [
             'lawyer' => $lawyer
         ]);

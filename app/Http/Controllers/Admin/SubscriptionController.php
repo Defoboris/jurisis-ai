@@ -205,21 +205,7 @@ class SubscriptionController extends Controller
 
     public function cancel()
     {
-        $userId = Auth::id();
-
-        $subscription = Subscription::where('user_id', $userId)->latest()->first();
-        if ($subscription) {
-            $subscription->status = 'cancelled';
-            $subscription->save();
-
-            $payment = Payment::where('user_id', $userId)->latest()->first();
-
-
-            if ($payment) {
-                $payment->update(['status' => 'failed']);
-            }
-        }
-
+    
         return Inertia::render('Web/SubscriptionPlan/Cancel');
     }
 }

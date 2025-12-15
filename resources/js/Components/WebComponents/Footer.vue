@@ -30,7 +30,7 @@
           <div>
             <h3 class="mb-4 text-lg font-semibold font-heading">Parler à Jurisis</h3>
             <ul class="space-y-2 font-body">
-              <li>
+              <!-- <li>
                 <a href="#" class="transition-colors text-background/80 hover:text-secondary">
                   Parler à un expert
                 </a>
@@ -44,14 +44,14 @@
                 <a href="#" class="transition-colors text-background/80 hover:text-secondary">
                   Nous soutenir
                 </a>
-              </li>
+              </li> -->
             </ul>
           </div>
 
           <div>
             <h3 class="mb-4 text-lg font-semibold font-heading">Formation IA pour avocats</h3>
             <ul class="space-y-2 font-body">
-              <li>
+              <!-- <li>
                 <a href="#" class="transition-colors text-background/80 hover:text-secondary">
                   Jurisis pour votre cabinet
                 </a>
@@ -60,9 +60,9 @@
                 <a href="#" class="transition-colors text-background/80 hover:text-secondary">
                   Jurisis Pro (Professionnel)
                 </a>
-              </li>
+              </li> -->
               <li>
-                <a href="#" class="transition-colors text-background/80 hover:text-secondary">
+                <a href="https://artificialintelligenceact.eu/" class="transition-colors text-background/80 hover:text-secondary">
                   EU ACT
                 </a>
               </li>
@@ -73,18 +73,8 @@
             <h3 class="mb-4 text-lg font-semibold font-heading">Actualités</h3>
             <ul class="space-y-2 font-body">
               <li>
-                <a href="#" class="transition-colors text-background/80 hover:text-secondary">
-                  FAQ
-                </a>
-              </li>
-              <li>
-                <a href="#" class="transition-colors text-background/80 hover:text-secondary">
+                <a href="https://www.belgium.be/fr/justice/respect_de_la_vie_privee/protection_des_donnees_personnelles" class="transition-colors text-background/80 hover:text-secondary">
                   RGPD
-                </a>
-              </li>
-              <li>
-                <a href="#" class="transition-colors text-background/80 hover:text-secondary">
-                  Termes et conditions
                 </a>
               </li>
             </ul>
