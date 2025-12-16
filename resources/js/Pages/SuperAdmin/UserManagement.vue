@@ -26,11 +26,11 @@
         </div>
 
         <!-- Filters -->
-        <FilterBar
+        <!-- <FilterBar
           v-model="selectedFilter"
           :options="filterOptions"
           :icon-component="Filter"
-        />
+        /> -->
       </div>
 
       <!-- Table -->
@@ -94,19 +94,21 @@ const props = defineProps({
 // Computed Users (Search + Filter)
 // -------------------
 const filteredUsers = computed(() => {
-  const query = searchQuery.value.toLowerCase()
+  const query = searchQuery.value.trim().toLowerCase()
+  const filter = selectedFilter.value
 
   return props.users.filter((user) => {
+    // ---- SEARCH ----
     const matchesSearch =
+      !query ||
       user.name?.toLowerCase().includes(query) ||
       user.email?.toLowerCase().includes(query)
 
+    // ---- FILTER ----
     const matchesFilter =
-      selectedFilter.value === 'all' ||
-      (selectedFilter.value === 'active' && user.status === 'Actif') ||
-      (selectedFilter.value === 'blocked' && user.status === 'Bloqué') ||
-      (selectedFilter.value === 'premium' && user.subscription === 'Premium') ||
-      (selectedFilter.value === 'standard' && user.subscription === 'Standard')
+      filter === 'all' ||
+      (filter === 'Inactif' && user.status === 'Inactif') ||
+      (filter === 'Actif' && user.status === 'Actif')
 
     return matchesSearch && matchesFilter
   })
@@ -129,10 +131,8 @@ const columns = [
 // -------------------
 const filterOptions = [
   { value: 'all', label: 'Tous les utilisateurs' },
-  { value: 'active', label: 'Actifs' },
-  { value: 'blocked', label: 'Bloqués' },
-  { value: 'premium', label: 'Premium' },
-  { value: 'standard', label: 'Standard' }
+  { value: 'Actif', label: 'Actifs' },
+  { value: 'Inactif', label: 'Inactif' },
 ]
 
 // -------------------
