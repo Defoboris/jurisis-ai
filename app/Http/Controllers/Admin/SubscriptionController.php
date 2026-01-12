@@ -82,18 +82,18 @@ class SubscriptionController extends Controller
     public function checkout(Request $request)
     {
         try {
-            // ✅ Validate input
+            // Validate input
             $request->validate([
                 'plan_id' => 'required|exists:subscription_plans,id',
             ]);
 
-            // ✅ Retrieve subscription plan
+            // Retrieve subscription plan
             $subscriptionPlan = SubscriptionPlan::findOrFail($request->plan_id);
 
-            // ✅ Initialize Stripe
+            // Initialize Stripe
             $stripe = new StripeClient(env('STRIPE_SECRET_KEY'));
 
-            // ✅ Create checkout session
+            // Create checkout session
             $checkout_session = $stripe->checkout->sessions->create([
                 'line_items' => [[
                     'price_data' => [
@@ -110,7 +110,7 @@ class SubscriptionController extends Controller
                 'cancel_url' => route('checkout.cancel', [], true),
             ]);
 
-            // ✅ Create pending subscription
+            // Create pending subscription
             $subscription = Subscription::create([
                 'user_id' => Auth::id(),
                 'subscription_plan_id' => $subscriptionPlan->id,
@@ -121,7 +121,7 @@ class SubscriptionController extends Controller
                 'provider_ref' => $checkout_session->id,
             ]);
 
-            // ✅ Create pending payment record
+            // Create pending payment record
             Payment::create([
                 'user_id' => Auth::id(),
                 'subscription_id' => $subscription->id,
@@ -133,7 +133,7 @@ class SubscriptionController extends Controller
                 'meta' => json_encode($checkout_session),
             ]);
 
-            // ✅ Return Stripe checkout URL to frontend
+            // Return Stripe checkout URL to frontend
             return response()->json([
                 'url' => $checkout_session->url
             ]);
